@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\DataBaseTypeWhere;
 use App\Rules\DayName;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,8 +26,12 @@ class DayFilter extends FormRequest
     public function rules()
     {
         return [
-            'day_name' => [new DayName()],
-            'free_day' => ['boolean'],
+            'date.*.value' => ['date_format:d-m-Y', "max:255"],
+            'date.*.type' => [new DataBaseTypeWhere()],
+            'day_name.value' => [new DayName()],
+            'day_name.type' => [new DataBaseTypeWhere()],
+            'free_day.value' => ['boolean'],
+            'free_day.type' => [new DataBaseTypeWhere()],
         ];
     }
 }

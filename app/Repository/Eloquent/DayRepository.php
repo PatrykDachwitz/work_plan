@@ -22,7 +22,21 @@ class DayRepository implements DayInterface
         $days = $this->day->newQuery();
 
         foreach ($filters ?? [] as $columnName => $value) {
-            $days->where($columnName, $value);
+            if(!isset($value['value'])) {
+                foreach ($value ?? [] as $val) {
+                    if(isset($val['type'])) {
+                        $days->where($columnName, $val['type'], $val['value']);
+                    } else {
+                        $days->where($columnName, $val['value']);
+                    }
+                }
+            } else {
+                if (isset($value['type'])) {
+                    $days->where($columnName, $value['type'], $value['value']);
+                } else {
+                    $days->where($columnName, $value['value']);
+                }
+            }
         }
 
         return $days->get($column);

@@ -25,7 +25,7 @@ class DayUpdate extends FormRequest
     public function rules()
     {
         return [
-            'date' => ['date_format:d-m', "max:255"],
+            'date' => ['date_format:d-m-Y', "max:255"],
             'day_name' => [new DayName(), "max:255"],
             'free_day' => ['boolean'],
         ];
