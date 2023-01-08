@@ -3,35 +3,42 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\DayCreate;
-use App\Http\Requests\DayFilter;
-use App\Http\Requests\DayUpdate;
-use App\Http\Resources\Day;
-use App\Http\Resources\Days;
-use App\Repository\DayRepository;
+use App\Http\Requests\NotificationCreate;
+use App\Http\Requests\NotificationFilter;
+use App\Http\Requests\NotificationUpdate;
+use App\Http\Resources\Notification;
+use App\Http\Resources\Notifications;
+use App\Repository\NotificationRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Exception;
 
-class DaysController extends Controller
+class NotificationController extends Controller
 {
 
-    private $dayRepository;
+    private $notificationRepository;
 
-    public function __construct(DayRepository $dayRepository) {
-        $this->dayRepository = $dayRepository;
+    public function __construct(NotificationRepository $notificationRepository) {
+        $this->notificationRepository = $notificationRepository;
     }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(DayFilter $request)
+    public function index(NotificationFilter $request)
     {
-        $filters = $request->validated();
-        $days = $this->dayRepository->get($filters);
+        $clearData = $request->validated();
+        try {
+            $notifications = $this->notificationRepository->get($clearData);
+        } catch (Exception) {
+            return response()
+                ->json([
+                    'msg' => 'Error server'
+                ], 500);
+        }
         return response()
-            ->json(new Days($days), 200);
+            ->json(new Notifications($notifications), 200);
     }
 
     /**
@@ -41,7 +48,7 @@ class DaysController extends Controller
      */
     public function create()
     {
-
+        //
     }
 
     /**
@@ -50,20 +57,21 @@ class DaysController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(DayCreate $request)
+    public function store(NotificationCreate $request)
     {
         $clearData = $request->validated();
+
         try {
-            $day = $this->dayRepository->create($clearData);
+            $notification = $this->notificationRepository->create($clearData);
         } catch (Exception) {
             return response()
                 ->json([
-                  'msg' => 'Error server'
+                    'msg' => 'Error server'
                 ], 500);
         }
 
         return response()
-            ->json(new Day($day), 200);
+            ->json(new Notification($notification), 200);
     }
 
     /**
@@ -75,12 +83,12 @@ class DaysController extends Controller
     public function show(int $id)
     {
         try {
-            $day = $this->dayRepository->findOrFail($id);
+            $notification = $this->notificationRepository->findOrFail($id);
         } catch (ModelNotFoundException) {
             return response()
-            ->json([
-                'msg' => 'Day not found'
-            ], 404);
+                ->json([
+                    'msg' => 'Notification not found'
+                ], 404);
         } catch (Exception) {
             return response()
                 ->json([
@@ -89,7 +97,7 @@ class DaysController extends Controller
         }
 
         return response()
-            ->json(new Day($day), 200);
+            ->json(new Notification($notification), 200);
     }
 
     /**
@@ -110,18 +118,18 @@ class DaysController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(DayUpdate $request,int $id)
+    public function update(NotificationUpdate $request, int $id)
     {
         $clearData = $request->validated();
 
         try {
-            $day = $this->dayRepository->update($clearData, $id);
+            $notification = $this->notificationRepository->update($clearData, $id);
         } catch (ModelNotFoundException) {
             return response()
                 ->json([
-                    'msg' => "Day not found"
+                    'msg' => 'Notification not found'
                 ], 404);
-        } catch (Exception) {
+        }catch (Exception) {
             return response()
                 ->json([
                     'msg' => 'Error server'
@@ -129,7 +137,7 @@ class DaysController extends Controller
         }
 
         return response()
-            ->json(new Day($day), 200);
+            ->json(new Notification($notification), 200);
     }
 
     /**
@@ -141,11 +149,11 @@ class DaysController extends Controller
     public function destroy(int $id)
     {
         try {
-            $this->dayRepository->destroy($id);
+            $this->notificationRepository->destroy($id);
         } catch (ModelNotFoundException) {
             return response()
                 ->json([
-                    'msg' => "Day not found"
+                    'msg' => 'Notification not found'
                 ], 404);
         } catch (Exception) {
             return response()
@@ -156,8 +164,8 @@ class DaysController extends Controller
 
         return response()
             ->json([
-                'msg' => "Day is deleted on database",
-                'url' => action([$this::class, 'index'])
+                'msg' => 'Notification is deleted',
+                'action' => action([$this::class, 'index'])
             ], 302);
     }
 }

@@ -1,0 +1,79 @@
+.content-container {
+  min-height: 100vh;
+  flex:50% 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar {
+  width: 90%;
+  min-height: 80vh;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  &-header {
+    min-height: 45px;
+    background-color: $gray-800;
+    flex: 10% 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  &-body {
+    flex: 90% 1;
+  }
+}
+
+.day-body {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  span {
+    color: $dark;
+  }
+}
+.group-button-add-holidays {
+  flex: 1;
+  & button {
+    min-height: 100%;
+    border: 0px;
+    color: $light;
+    background-color: $dark;
+    padding: 0px 20px;
+  }
+}
+.searche-group-date {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1;
+  & input {
+    border: 0px;
+    background-color: $dark;
+    color: $light;
+    & :active {
+      border:0;
+    }
+  }
+  & button {
+    border: 0px;
+    color: $light;
+    background-color: $dark;
+    padding: 0px 20px;
+  }
+}
+
+.button-group-filter{
+  flex: 1;
+  display: flex;
+  & button {
+    border: 1px;
+    min-height: 100%;
+    background-color: $dark;
+    padding: 0 20px;
+    color: $light;
+  }
+}

@@ -1,0 +1,26 @@
+
+.holidays {
+  min-height: 100vh;
+  min-width: 100%;
+  top:0;
+  left:0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #a0aec0;
+  position: fixed;
+
+  &-form {
+    width: 15%;
+  }
+  &-header{
+    width: 100%;
+    background-color: $dark;
+    color: $light;
+
+  }
+
+  &-body {
+    width: 100%;
+  }
+}

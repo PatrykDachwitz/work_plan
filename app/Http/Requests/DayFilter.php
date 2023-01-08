@@ -1,11 +1,12 @@
 <?php
-declare(strict_types=1);
+
 namespace App\Http\Requests;
 
+use App\Rules\DataBaseTypeWhere;
 use App\Rules\DayName;
 use Illuminate\Foundation\Http\FormRequest;
 
-class DayUpdate extends FormRequest
+class DayFilter extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,9 +26,12 @@ class DayUpdate extends FormRequest
     public function rules()
     {
         return [
-            'date' => ['date_format:d-m-Y', "max:255"],
-            'day_name' => [new DayName(), "max:255"],
-            'free_day' => ['boolean'],
+            'date.*.value' => ['date_format:d-m-Y', "max:255"],
+            'date.*.type' => [new DataBaseTypeWhere()],
+            'day_name.value' => [new DayName()],
+            'day_name.type' => [new DataBaseTypeWhere()],
+            'free_day.value' => ['boolean'],
+            'free_day.type' => [new DataBaseTypeWhere()],
         ];
     }
 }

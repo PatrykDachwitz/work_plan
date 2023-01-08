@@ -17,9 +17,29 @@ class DayRepository implements DayInterface
         return $this->day->findOrFail($id);
     }
 
-    public function get(array|string $column = '*')
+    public function get(array $filters = [], string|array $column = "*")
     {
-        return $this->day->get($column);
+        $days = $this->day->newQuery();
+
+        foreach ($filters ?? [] as $columnName => $value) {
+            if(!isset($value['value'])) {
+                foreach ($value ?? [] as $val) {
+                    if(isset($val['type'])) {
+                        $days->where($columnName, $val['type'], $val['value']);
+                    } else {
+                        $days->where($columnName, $val['value']);
+                    }
+                }
+            } else {
+                if (isset($value['type'])) {
+                    $days->where($columnName, $value['type'], $value['value']);
+                } else {
+                    $days->where($columnName, $value['value']);
+                }
+            }
+        }
+
+        return $days->get($column);
     }
 
     public function update(array $data, int $id)

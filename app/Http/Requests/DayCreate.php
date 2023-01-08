@@ -25,7 +25,7 @@ class DayCreate extends FormRequest
     public function rules()
     {
         return [
-            'date' => ['required', 'date_format:d-m', "max:255"],
+            'date' => ['required', 'date_format:d-m-Y', "max:255"],
             'day_name' => ['required', new DayName(), "max:255"],
             'free_day' => ['boolean'],
         ];
