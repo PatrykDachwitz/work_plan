@@ -21,9 +21,24 @@ class DayController extends Controller
     public function index()
     {
         $firstDay = date('d-m-Y');
-        $lastDayView = date('d-m-Y', strtotime('-32 day'));
+        $lastDayView = date('d-m-Y', strtotime('-50 day'));
 
-        return view('site.calendar');
+        $filterDayData = [
+            [
+                'value' => $firstDay,
+                'type' => '=>',
+            ],
+            [
+                'value' => $lastDayView,
+                'type' => '<=',
+            ],
+
+        ];
+
+
+        return view('days.index', [
+            'days' => $this->dayRepository->get()
+        ]);
     }
 
     /**

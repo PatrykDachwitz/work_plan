@@ -1,0 +1,7 @@
+.days-body {
+  display: flex;
+  flex-direction: column;
+  &-row {
+    flex: 100% 1;
+  }
+}
