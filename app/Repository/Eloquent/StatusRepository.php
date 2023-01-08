@@ -17,9 +17,15 @@ class StatusRepository implements \App\Repository\StatusRepository
         return $this->status->findOrFail($id);
     }
 
-    public function get(array|string $column = '*')
+    public function get(array $filters, array|string $column = '*')
     {
-        return $this->status->get($column);
+        $statuses = $this->status->newQuery();
+
+        foreach ($filters as $columnName => $value) {
+            $statuses->where($columnName, $value);
+        }
+
+        return $statuses->get($column);
     }
 
     public function update(array $data, int $id)

@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StatusCreate;
+use App\Http\Requests\StatusFilter;
 use App\Http\Requests\StatusUpdate;
 use App\Http\Resources\Statuses;
 use App\Http\Resources\Status;
 use App\Repository\StatusRepository;
+use Database\Seeders\StatusDay;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Exception;
@@ -25,10 +27,12 @@ class StatusController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(StatusFilter $request)
     {
+        $filters = $request->validated();
+
         try {
-            $statuses = $this->statusRepository->get();
+            $statuses = $this->statusRepository->get($filters);
         } catch (Exception) {
             return response()
                 ->json([], 500);

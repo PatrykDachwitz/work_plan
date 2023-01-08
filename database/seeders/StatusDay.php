@@ -27,7 +27,7 @@ class StatusDay extends Seeder
               'day_id' => $day_id,
               'time_start' => $date . " 7:05:01",
               'time_end' => $date . " 15:15:21",
-              'status' => 'accepted',
+              'status' => 'workDay',
               'accepted' => true,
               'accepted_user_id' => 2,
               'created_at' => Carbon::now(),

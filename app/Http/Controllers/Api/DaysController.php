@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DayCreate;
+use App\Http\Requests\DayFilter;
 use App\Http\Requests\DayUpdate;
 use App\Http\Resources\Day;
 use App\Http\Resources\Days;
@@ -25,9 +26,10 @@ class DaysController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(DayFilter $request)
     {
-        $days = $this->dayRepository->get();
+        $filters = $request->validated();
+        $days = $this->dayRepository->get($filters);
         return response()
             ->json(new Days($days), 200);
     }
