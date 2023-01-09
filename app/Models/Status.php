@@ -19,4 +19,8 @@ class Status extends Model
         'user_id',
         'day_id',
     ];
+
+    public function relationEvents() {
+        return $this->hasMany(Event::class);
+    }
 }

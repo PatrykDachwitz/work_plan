@@ -25,7 +25,9 @@ class StatusRepository implements \App\Repository\StatusRepository
             $statuses->where($columnName, $value);
         }
 
-        return $statuses->get($column);
+        return $statuses
+            ->with('relationEvents')
+            ->get($column);
     }
 
     public function update(array $data, int $id)

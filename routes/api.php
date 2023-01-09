@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\DaysController;
 use App\Http\Controllers\Api\StatusController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\EventController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,3 +25,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::resource('days', DaysController::class);
 Route::resource('status', StatusController::class);
 Route::resource('notification', NotificationController::class);
+Route::resource('event', EventController::class);
