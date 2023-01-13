@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use \App\Http\Controllers\HomePage;
+use \App\Http\Controllers\StatusController;
+use \App\Http\Controllers\CalendarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::get('/', [\App\Http\Controllers\DayController::class, 'index']);
-
+Route::get('/', HomePage::class);
+Route::resource('/day', StatusController::class);
+Route::get('/calendar', CalendarController::class)
+->name('calendar.index');

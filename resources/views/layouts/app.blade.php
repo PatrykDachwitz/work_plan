@@ -33,13 +33,13 @@
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
-                    <a href="" class="nav-link active" aria-current="page">
+                    <a class="nav-link active" href="{{ route('calendar.index') }}" aria-current="page">
                         <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
                         Kalendarz
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="" class="nav-link text-white" aria-current="page">
+                    <a class="nav-link text-white" href="{{ route('day.index') }}" aria-current="page">
                         <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
                         Lista dni
                     </a>
@@ -57,21 +57,7 @@
         @yield('content')
     </div>
 </div>
-<div class="holidays d-none">
-    <div class="holidays-form shadow-sm">
-        <div class="holidays-header fs-4 text-start">
-            Add free day
-        </div>
-        <div class="holidays-body">
-            <form>
-                <label for="first">First day</label>
-                <input>
-                <label for="first">End day</label>
-                <label for="first">Type of free day</label>
-            </form>
-        </div>
-    </div>
-</div>
+
 @vite(['resources/js/app.js'])
 </body>
 </html>

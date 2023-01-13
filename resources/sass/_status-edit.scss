@@ -1,0 +1,13 @@
+.status-body {
+  display: flex;
+  flex-direction: column;
+  &-btn {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  &-status {
+    flex:100% 1;
+    display: flex;
+    flex-direction: column;
+  }
+}

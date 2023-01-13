@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StatusCreate;
 use App\Repository\DayRepository;
+use App\Repository\StatusRepository;
+use App\Services\Status\ManyStatuses;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Exception;
 
-class DayController extends Controller
+class StatusController extends Controller
 {
-    protected $dayRepository;
+    protected $statusRepository;
 
-    public function __construct(DayRepository $dayRepository) {
-        $this->dayRepository = $dayRepository;
+    public function __construct(StatusRepository $statusRepository) {
+        $this->statusRepository = $statusRepository;
     }
 
     /**
@@ -23,21 +28,8 @@ class DayController extends Controller
         $firstDay = date('d-m-Y');
         $lastDayView = date('d-m-Y', strtotime('-50 day'));
 
-        $filterDayData = [
-            [
-                'value' => $firstDay,
-                'type' => '=>',
-            ],
-            [
-                'value' => $lastDayView,
-                'type' => '<=',
-            ],
-
-        ];
-
-
         return view('days.index', [
-            'days' => $this->dayRepository->get()
+            'days' => $this->statusRepository->get(),
         ]);
     }
 
@@ -46,9 +38,11 @@ class DayController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(DayRepository $dayRepository)
     {
-        //
+        return view('days.create', [
+            'days' => $dayRepository->get()
+        ]);
     }
 
     /**
@@ -57,9 +51,20 @@ class DayController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StatusCreate $request, ManyStatuses $statuses)
     {
-        //
+        try {
+            $clearData = $request->validated();
+            $statuses->insert($clearData);
+        } catch (Exception) {
+            return redirect()
+                ->route('day.show', ['day' => 1])
+                ->with('error', "Error udpdate free day");
+
+        }
+        return redirect()
+            ->route('calendar.index')
+            ->with('success', "Poprawnie zaktualizowano Stronę");
     }
 
     /**
@@ -68,9 +73,17 @@ class DayController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(int $id)
     {
-        //
+        try {
+            $day = $this->statusRepository->findOrFail($id);
+         //   dd($day);
+        } catch (ModelNotFoundException) {
+            abort(404);
+        }
+        return View('days.show', [
+            'day' => $day
+        ]);
     }
 
     /**

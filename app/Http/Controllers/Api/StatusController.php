@@ -71,7 +71,8 @@ class StatusController extends Controller
         }
 
         return response()
-            ->json(new Status($status), 200);
+            ->json(['msg' => 'succes'], 200);
+            //->json(new Status($status), 200);
     }
 
     /**

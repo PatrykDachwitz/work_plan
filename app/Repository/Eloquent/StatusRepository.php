@@ -14,10 +14,13 @@ class StatusRepository implements \App\Repository\StatusRepository
 
     public function findOrFail(int $id)
     {
-        return $this->status->findOrFail($id);
+        return $this->status
+            ->with('relationEvents')
+            ->with('relationDay')
+            ->findOrFail($id);
     }
 
-    public function get(array $filters, array|string $column = '*')
+    public function get(array $filters = [], array|string $column = '*')
     {
         $statuses = $this->status->newQuery();
 
@@ -27,6 +30,7 @@ class StatusRepository implements \App\Repository\StatusRepository
 
         return $statuses
             ->with('relationEvents')
+            ->with('relationDay')
             ->get($column);
     }
 
@@ -47,6 +51,8 @@ class StatusRepository implements \App\Repository\StatusRepository
 
     public function create(array $data)
     {
+        $status = $this->status::insert($data);
+        /*
         $status = new $this->status();
 
         $status->user_id = $data['user_id'];
@@ -56,7 +62,7 @@ class StatusRepository implements \App\Repository\StatusRepository
         if(!empty($data['time_start'])) $status->time_start = $data['time_start'];
         if(!empty($data['time_end'])) $status->time_start = $data['time_end'];
         $status->save();
-
+*/
         return $status;
     }
 

@@ -8,9 +8,8 @@ class DataBaseTypeWhere implements Rule
 {
     private const TYPE_WHERE_DATABASE = [
       '==',
-      '=>',
-      '=<',
-      '===',
+      '>=',
+      '<=',
       '!==',
       '>',
       '<',
