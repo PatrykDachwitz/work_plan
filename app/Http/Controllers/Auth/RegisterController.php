@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use App\Rules\PhoneNumberValidate;
+use App\Rules\ZipCodeValidate;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -50,9 +52,17 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            "first_name" => ['required', 'string', 'max:255'],
+            "last_name" => ['string', 'max:255'],
+            "email_company" => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            "email_private" => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            "number_phone" => [new PhoneNumberValidate(), 'max:12'],
+            "city" => ['string', 'max:255'],
+            "zip_code" => [new ZipCodeValidate(), 'max:6'],
+            "street" => ['string', 'max:255'],
+            "role_id" => ['string', 'max:99999999'],
+            "group_id" => ['string', 'max:99999999'],
         ]);
     }
 
@@ -64,10 +74,22 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        $user = new User();
+
+        $user->password = Hash::make($data['password']);
+        $user->first_name = $data['first_name'];
+        $user->last_name = $data['last_name'] ?? null;
+        $user->email_company = $data['email_company'];
+        $user->email_private = $data['email_private'];
+        $user->number_phone = $data['number_phone'] ?? null;
+        $user->city = $data['city'] ?? null;
+        $user->zip_code = $data['zip_code'] ?? null;
+        $user->street = $data['street'] ?? null;
+        $user->role_id = $data['role_id'] ?? 0;
+        $user->group_id = $data['group_id'] ?? 0;
+        $user->token_api = uniqid();
+        $user->save();
+
+        return $user;
     }
 }

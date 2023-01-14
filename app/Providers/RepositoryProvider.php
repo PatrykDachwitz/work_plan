@@ -11,6 +11,8 @@ use App\Repository\NotificationRepository as NotificationRepositoryInterface;
 use App\Repository\Eloquent\NotificationRepository;
 use App\Repository\EventRepository as EventRepositoryInterface;
 use App\Repository\Eloquent\EventRepository;
+use App\Repository\UserRepository as UserRepositoryInterface;
+use App\Repository\Eloquent\UserRepository;
 
 
 class RepositoryProvider extends ServiceProvider
@@ -50,6 +52,11 @@ class RepositoryProvider extends ServiceProvider
         $this->app->singleton(
             EventRepositoryInterface::class,
             EventRepository::class
+        );
+
+        $this->app->singleton(
+            UserRepositoryInterface::class,
+            UserRepository::class
         );
     }
 }

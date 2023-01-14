@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\HomePage;
 use \App\Http\Controllers\StatusController;
 use \App\Http\Controllers\CalendarController;
+use \App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,4 +21,9 @@ use \App\Http\Controllers\CalendarController;
 Route::get('/', HomePage::class);
 Route::resource('/day', StatusController::class);
 Route::get('/calendar', CalendarController::class)
-->name('calendar.index');
+    ->name('calendar.index');
+Route::post('/user/{id}', [UserController::class, 'update'])
+    ->name('user.update.post');
+Route::resource('/user', UserController::class);
+Route::auth();
+
