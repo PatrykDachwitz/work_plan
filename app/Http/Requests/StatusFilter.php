@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\AvailableStatusDay;
+use App\Rules\DataBaseTypeWhere;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StatusFilter extends FormRequest
@@ -30,6 +31,8 @@ class StatusFilter extends FormRequest
             'status' => [new AvailableStatusDay()],
             'accepted' => ['integer'],
             'accepted_user_id' => ['integer'],
+            'time_start.value' => ['date_format:Y-m-d H:i:s'],
+            'time_start.type' => [new DataBaseTypeWhere()],
         ];
     }
 }

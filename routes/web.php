@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\HomePage;
 use \App\Http\Controllers\StatusController;
 use \App\Http\Controllers\CalendarController;
-use \App\Http\Controllers\UserController;
+use \App\Http\Controllers\Auth\RegisterController;
+use \App\Http\Controllers\Auth\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,14 +17,38 @@ use \App\Http\Controllers\UserController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::middleware('auth')
+    ->group(function (){
+    Route::get('/', HomePage::class)
+    ->name('dashboard');
+    Route::get('/calendar', CalendarController::class)
+        ->name('calendar.index');
+    Route::resource('/day', StatusController::class);
+    Route::post('/register', [RegisterController::class, 'register'])
+        ->name('register');
+    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])
+        ->name('register');
+    Route::get('/logout', [LoginController::class, 'logout'])
+    ->name('logout');
+    Route::group([
+        'namespace' => "\App\Http\Controllers",
+        'as' => 'user.',
+        'prefix' => 'user'
+    ], function() {
+        Route::get('/', 'UserController@index')
+            ->name('index');
+        Route::get('/show', 'UserController@show')
+            ->name('show');
+        Route::get('/create', 'UserController@create')
+            ->name('create');
+        Route::get('/{id}', 'UserController@edit')
+            ->name('edit');
+        Route::post('/', 'UserController@update')
+            ->name('update');
+    });
+});
 
-
-Route::get('/', HomePage::class);
-Route::resource('/day', StatusController::class);
-Route::get('/calendar', CalendarController::class)
-    ->name('calendar.index');
-Route::post('/user/{id}', [UserController::class, 'update'])
-    ->name('user.update.post');
-Route::resource('/user', UserController::class);
-Route::auth();
-
+Route::post('/login', [LoginController::class, 'login'])
+    ->name('login');
+Route::get('/login', [LoginController::class, 'showLoginForm'])
+    ->name('login');

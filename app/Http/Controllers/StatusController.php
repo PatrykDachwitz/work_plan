@@ -9,9 +9,11 @@ use App\Services\Status\ManyStatuses;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class StatusController extends Controller
 {
+    private const DAYS_AHEAD = 10;
     protected $statusRepository;
 
     public function __construct(StatusRepository $statusRepository) {
@@ -25,11 +27,18 @@ class StatusController extends Controller
      */
     public function index()
     {
-        $firstDay = date('d-m-Y');
-        $lastDayView = date('d-m-Y', strtotime('-50 day'));
+
+        $filters = [
+            'user_id' => Auth::id(),
+            'time_start' => [
+                'value' => date('Y-m-d', strtotime("+" . SELF::DAYS_AHEAD . " day")) . " 23:59:59",
+                'type' => "<="
+            ]
+        ];
+        $limit = 10;
 
         return view('days.index', [
-            'days' => $this->statusRepository->get(),
+            'days' => $this->statusRepository->get($filters, $limit),
         ]);
     }
 

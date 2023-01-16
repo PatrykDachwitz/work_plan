@@ -20,14 +20,13 @@
             <div class="dropdown">
                 <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
-                    <strong>mdo</strong>
+                    <strong>{{ $profil->first_name }} {{ $profil->last_name }}</strong>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-dark text-small shadow" style="">
-                    <li><a class="dropdown-item" href="#">New project...</a></li>
-                    <li><a class="dropdown-item" href="#">Settings</a></li>
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li><a class="dropdown-item" href="{{ route('user.index') }}">Użytkownicy</a></li>
+                    <li><a class="dropdown-item" href="{{ route('user.show') }}">Ustawienia</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#">Sign out</a></li>
+                    <li><a class="dropdown-item" href="{{ route('logout') }}">Sign out</a></li>
                 </ul>
             </div>
             <hr>
@@ -38,6 +37,14 @@
                         Kalendarz
                     </a>
                 </li>
+                @if($superAdmin)
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ route('user.create') }}" aria-current="page">
+                            <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+                            Dodaj użytkownika
+                        </a>
+                    </li>
+                @endif
                 <li class="nav-item">
                     <a class="nav-link text-white" href="{{ route('day.index') }}" aria-current="page">
                         <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>

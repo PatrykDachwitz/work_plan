@@ -20,14 +20,18 @@ class StatusRepository implements \App\Repository\StatusRepository
             ->findOrFail($id);
     }
 
-    public function get(array $filters = [], array|string $column = '*')
+    public function get(array $filters = [], int $limit = 10, array|string $column = '*')
     {
         $statuses = $this->status->newQuery();
 
-        foreach ($filters as $columnName => $value) {
-            $statuses->where($columnName, $value);
+        foreach ($filters as $columnName => $filter) {
+            if(is_array($filter)) {
+                $statuses->where($columnName, $filter['type'], $filter['value']);
+            } else {
+                $statuses->where($columnName, $filter);
+            }
         }
-
+        $statuses->limit($limit);
         return $statuses
             ->with('relationEvents')
             ->with('relationDay')

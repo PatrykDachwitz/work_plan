@@ -15,12 +15,15 @@
             </div>
 
             <div class="button-group-filter">
+                <button class="button-group-filter-single button-active-body" data-body="userData">userData</button>
+                <button class="button-group-filter-single button-active-body" data-body="statusesAccepted">statusesAccepted</button>
+                <button class="button-group-filter-single button-active-body" data-body="statusesNotAccepted">statusesNotAccepted</button>
                 <button class="button-group-filter-single">Zapisz</button>
                 <button class="button-group-filter-single">Zapisz i wyjdz</button>
                 <button class="button-group-filter-single">Zapisz i nowy</button>
             </div>
         </div>
-        <div class="status-body">
+        <div class="status-body active" data-body="userData">
             <div class="m-md-5 d-flex">
                 <picture>
                     <img src="https://avatars.githubusercontent.com/u/98681?v=4" class="rounded-circle me-5 border border-dark border-2" width="250" height="250">
@@ -132,6 +135,35 @@
                     <div style="min-height: 250px;min-width:250px;border: 20px solid #319330; border-radius:100%" class="d-flex justify-content-center align-items-center fs-3 mx-5" ><span>Urlop<br>150H</span></div>
                 </div>
             </div>
+        </div>
+        <div class="days-body d-none" data-body="statusesNotAccepted">
+            @foreach($statusesNotAccepted ?? [] as $status)
+                <div class="days-body-row">
+                    <div class="days-body-head @if($status->relationDay->free_day) bg-warning @else bg-gray @endif ps-1 fs-4 py-2">
+                        <button class="btn btn-dark mx-3">Zakceptuj</button>
+                        <span>{{ $status->relationDay->day_name }} {{ $status->relationDay->date }}</span>
+                    </div>
+                    @foreach($status->relationEvents ?? [] as $event)
+                        <div class="days-body-status fs-5 ps-3 py-2">
+                            {{ $event->date }} {{ $event->description }}
+                        </div>
+                    @endforeach
+                </div>
+            @endforeach
+        </div>
+        <div class="days-body d-none" data-body="statusesAccepted">
+            @foreach($statusesAccepted ?? [] as $status)
+                <div class="days-body-row">
+                    <div class="days-body-head @if($status->relationDay->free_day) bg-warning @else bg-gray @endif ps-1 fs-4 py-2">
+                        <span>{{ $status->relationDay->day_name }} {{ $status->relationDay->date }}</span>
+                    </div>
+                    @foreach($status->relationEvents ?? [] as $event)
+                        <div class="days-body-status fs-5 ps-3 py-2">
+                            {{ $event->date }} {{ $event->description }}
+                        </div>
+                    @endforeach
+                </div>
+            @endforeach
         </div>
     </form>
     @endisset

@@ -4,6 +4,7 @@ namespace App\Repository\Eloquent;
 
 use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserRepository implements \App\Repository\UserRepository
@@ -15,9 +16,12 @@ class UserRepository implements \App\Repository\UserRepository
         $this->user = $user;
     }
 
-    public function update(array $data, int $id)
+    public function get(array|string $column = '*') {
+        return $this->user->get($column);
+    }
+
+    public function update(array $data, User $updateUser)
     {
-        $updateUser = $this->findOrFail($id);
 
         $updateUser->first_name = $data['first_name'] ?? $updateUser->first_name;
         $updateUser->email_company = $data['email_company'] ?? $updateUser->email_company;

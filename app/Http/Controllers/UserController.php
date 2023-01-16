@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserCreate;
+use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
@@ -22,7 +25,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        return view('user.index', [
+            'users' => $this->userRepository->get(),
+        ]);
     }
 
     /**
@@ -46,11 +51,9 @@ class UserController extends Controller
         $clearData = $request->validated();
 
         $user = $this->userRepository->create($clearData);
-
+        if (!Gate::any('isSuperAdmin')) abort(403);
         return redirect()
-            ->route('user.show', [
-               'user' => $user->id
-            ]);
+            ->route('user.show');
 
     }
 
@@ -60,10 +63,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(int $user)
+    public function show()
     {
         return view('user.show', [
-            'user' => $this->userRepository->findOrFail($user)
+            'user' => Auth::user()
         ]);
     }
 
@@ -73,8 +76,26 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(StatusRepository $statusRepository, int $id)
     {
+        $employee = $this->userRepository->findOrFail($id);
+        if (!Gate::any('userChangePermissions', [$employee])) abort(403);
+
+        $filtersNotAccepted = [
+            'user_id' => $id,
+            'accepted' => 0,
+        ];
+
+        $filtersAccepted = [
+            'user_id' => $id,
+            'accepted' => 1,
+        ];
+
+        return view('user.edit', [
+            'user' => $employee,
+            'statusesNotAccepted' => $statusRepository->get($filtersNotAccepted),
+            'statusesAccepted' => $statusRepository->get($filtersAccepted),
+        ]);
     }
 
     /**
@@ -86,12 +107,22 @@ class UserController extends Controller
      */
     public function update(UserCreate $request, int $id)
     {
-        $clearData = $request->validated();
-        $this->userRepository->update($clearData, $id);
+        $employee = $this->userRepository->findOrFail($id);
 
+        if (!Gate::any('myAccount', [$id]) | !Gate::any('userChangePermissions', [$employee])) {
+            abort(403);
+        }
+
+        $clearData = $request->validated();
+        $this->userRepository->update($clearData, $employee);
+
+        if (Gate::any('myAccount', [$id])) {
+            return redirect()
+                ->route('user.show');
+        }
         return redirect()
-            ->route('user.show', [
-               'user' => $id
+            ->route('user.edit', [
+                'id' => $id
             ]);
     }
 
