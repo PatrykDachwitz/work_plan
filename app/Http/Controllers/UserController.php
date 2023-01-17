@@ -115,9 +115,11 @@ class UserController extends Controller
 
         $clearData = $request->validated();
         $this->userRepository->update($clearData, $employee);
+
         event(new AddNotification('Update profil!!', $employee->id, route('user.edit', [
             'id' => $id
         ])));
+
         if (Gate::any('myAccount', [$id])) {
             return redirect()
                 ->route('user.show');

@@ -14,6 +14,8 @@ use App\Repository\EventRepository as EventRepositoryInterface;
 use App\Repository\Eloquent\EventRepository;
 use App\Repository\UserRepository as UserRepositoryInterface;
 use App\Repository\Eloquent\UserRepository;
+use App\Repository\HistoriesRepository as HistoriesRepositoryInterface;
+use App\Repository\Eloquent\HistoriesRepository;
 
 
 class RepositoryProvider extends ServiceProvider
@@ -63,6 +65,11 @@ class RepositoryProvider extends ServiceProvider
         $this->app->singleton(
             UserApi::class,
             UserRepository::class
+        );
+
+        $this->app->singleton(
+            HistoriesRepositoryInterface::class,
+            HistoriesRepository::class
         );
     }
 }
