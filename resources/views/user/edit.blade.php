@@ -5,8 +5,8 @@
     <form class="calendar shadow rounded" action="{{ route('user.update', [
     'id' => $user->id
         ]) }}" method="POST">
-        {{ dump($errors) }}
         @csrf
+        <input type="hidden" name="userTokenAuth" value="{{ $profil->token_api }}">
         <div class="calendar-header m-0 p-0 row text-white">
             <div class="group-button-add-holidays">
                 <a href="{{ url()->previous() }}">Back</a>
@@ -138,10 +138,10 @@
         </div>
         <div class="days-body d-none" data-body="statusesNotAccepted">
             @foreach($statusesNotAccepted ?? [] as $status)
-                <div class="days-body-row">
+                <div class="days-body-row" data-id="{{ $status->id }}">
                     <div class="days-body-head @if($status->relationDay->free_day) bg-warning @else bg-gray @endif ps-1 fs-4 py-2">
-                        <button class="btn btn-dark mx-3">Zakceptuj</button>
-                        <span>{{ $status->relationDay->day_name }} {{ $status->relationDay->date }}</span>
+                        <button class="btn btn-dark mx-3 button-accepted" data-id="{{ $status->id }}">Zakceptuj</button>
+                        <span>{{ $status->relationDay->day_name }} {{ $status->relationDay->date }} {{ $status->status }}</span>
                     </div>
                     @foreach($status->relationEvents ?? [] as $event)
                         <div class="days-body-status fs-5 ps-3 py-2">

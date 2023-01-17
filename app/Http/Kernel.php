@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace App\Http;
 
+use App\Http\Middleware\ApiPromisions;
 use App\Http\Middleware\CustomClientSite;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -44,6 +45,7 @@ class Kernel extends HttpKernel
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            CustomClientSite::class
         ],
     ];
 
@@ -65,5 +67,6 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'auth.token' => ApiPromisions::class
     ];
 }

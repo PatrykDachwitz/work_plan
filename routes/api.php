@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::resource('days', DaysController::class);
-Route::resource('status', StatusController::class);
+Route::resource('status', StatusController::class)
+->middleware('auth.token');
 Route::resource('notification', NotificationController::class);
 Route::resource('event', EventController::class);

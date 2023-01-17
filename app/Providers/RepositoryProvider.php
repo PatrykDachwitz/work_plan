@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Repository\UserApi;
 use Illuminate\Support\ServiceProvider;
 use App\Repository\StatusRepository as StatusRepositoryInterface;
 use App\Repository\Eloquent\StatusRepository;
@@ -56,6 +57,11 @@ class RepositoryProvider extends ServiceProvider
 
         $this->app->singleton(
             UserRepositoryInterface::class,
+            UserRepository::class
+        );
+
+        $this->app->singleton(
+            UserApi::class,
             UserRepository::class
         );
     }

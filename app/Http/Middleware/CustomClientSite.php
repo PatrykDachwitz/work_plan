@@ -13,7 +13,7 @@ class CustomClientSite
 {
 
     private const SUPER_ADMIN_ROLE_ID = [
-      2
+      3
     ];
     private const ADMIN_ROLE_ID = [
       2,
@@ -37,7 +37,7 @@ class CustomClientSite
         });
 
         Gate::define('userChangePermissions', function (User $user, User $employee) {
-            if (in_array($user->role_id, SELF::ADMIN_ROLE_ID ) & $user->group_id === $employee->group_id | Gate::any('isSuperAdmin')) {
+            if (in_array($user->role_id, SELF::ADMIN_ROLE_ID ) & $user->group_id === $employee->group_id || Gate::any('isSuperAdmin')) {
                 return true;
             } else {
                 return false;

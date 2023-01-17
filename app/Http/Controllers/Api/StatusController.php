@@ -8,11 +8,16 @@ use App\Http\Requests\StatusFilter;
 use App\Http\Requests\StatusUpdate;
 use App\Http\Resources\Statuses;
 use App\Http\Resources\Status;
+use App\Models\User;
 use App\Repository\StatusRepository;
+use App\Repository\UserApi;
+use App\Repository\UserRepository;
 use Database\Seeders\StatusDay;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class StatusController extends Controller
 {
@@ -61,6 +66,7 @@ class StatusController extends Controller
     public function store(StatusCreate $request)
     {
         $clearData = $request->validated();
+
         try {
             $status = $this->statusRepository->create($clearData);
         } catch (Exception) {
@@ -85,7 +91,6 @@ class StatusController extends Controller
     {
         try {
             $status = $this->statusRepository->findOrFail($id);
-
             return response()
                 ->json(new Status($status), 200);
         } catch (ModelNotFoundException) {
@@ -120,10 +125,25 @@ class StatusController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(StatusUpdate $request, int $id)
+    public function update(StatusUpdate $request,UserApi $userRepository, int $id)
     {
         $clearData = $request->validated();
+        $tokenApi = $clearData['token_api'];
+
         try{
+            $status = $this->statusRepository->findOrFail($id);
+            $user = $userRepository->findByToken($tokenApi);
+            $employee = $userRepository->findOrFail($status->user_id);
+            Auth::login($user);
+
+            if (!Gate::any('userChangePermissions', [$user, $employee])) {
+                return response()
+                    ->json([
+                        'msg' => 'You not have promision for update user'
+                    ], 403);
+            }
+
+            $clearData['accepted_user_id'] = Auth::id();
             $status = $this->statusRepository->update($clearData, $id);
         } catch (ModelNotFoundException) {
             return response()

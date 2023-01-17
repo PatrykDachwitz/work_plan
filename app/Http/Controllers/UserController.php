@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Event\AddNotification;
 use App\Http\Requests\UserCreate;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
@@ -108,14 +109,15 @@ class UserController extends Controller
     public function update(UserCreate $request, int $id)
     {
         $employee = $this->userRepository->findOrFail($id);
-
-        if (!Gate::any('myAccount', [$id]) | !Gate::any('userChangePermissions', [$employee])) {
+        if (!Gate::any('myAccount', [$id]) & !Gate::any('userChangePermissions', [$employee])) {
             abort(403);
         }
 
         $clearData = $request->validated();
         $this->userRepository->update($clearData, $employee);
-
+        event(new AddNotification('Update profil!!', $employee->id, route('user.edit', [
+            'id' => $id
+        ])));
         if (Gate::any('myAccount', [$id])) {
             return redirect()
                 ->route('user.show');

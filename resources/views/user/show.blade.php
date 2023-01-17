@@ -5,7 +5,6 @@
     <form class="calendar shadow rounded" action="{{ route('user.update', [
     'id' => $user->id
         ]) }}" method="POST">
-        {{ dump($errors) }}
         @csrf
         <div class="calendar-header m-0 p-0 row text-white">
             <div class="group-button-add-holidays">

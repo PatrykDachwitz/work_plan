@@ -43,7 +43,7 @@ Route::middleware('auth')
             ->name('create');
         Route::get('/{id}', 'UserController@edit')
             ->name('edit');
-        Route::post('/', 'UserController@update')
+        Route::post('/{id}', 'UserController@update')
             ->name('update');
     });
 });

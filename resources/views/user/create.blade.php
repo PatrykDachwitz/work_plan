@@ -2,7 +2,6 @@
 
 @section('content')
     <form class="calendar shadow rounded" action="{{ route('register') }}" method="POST">
-        {{ dump($errors) }}
         @csrf
         <div class="calendar-header m-0 p-0 row text-white">
             <div class="group-button-add-holidays">

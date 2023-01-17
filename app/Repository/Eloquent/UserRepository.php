@@ -3,11 +3,12 @@
 namespace App\Repository\Eloquent;
 
 use App\Models\User;
+use App\Repository\UserApi;
 use Exception;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class UserRepository implements \App\Repository\UserRepository
+class UserRepository implements \App\Repository\UserRepository, UserApi
 {
 
     private $user;
@@ -50,5 +51,14 @@ class UserRepository implements \App\Repository\UserRepository
     public function create(array $data)
     {
         return $this->user->create($data);
+    }
+
+    public function findByToken(string $token)
+    {
+        $user = $this->user
+        ->where('token_api', $token)
+        ->first();
+        if (is_null($user)) throw new ModelNotFoundException();
+        else return $user;
     }
 }
