@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
-namespace App\Http\Requests;
+namespace App\Http\Requests\Create;
 
 use App\Rules\AvailableStatusDay;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StatusCreate extends FormRequest
+class Status extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

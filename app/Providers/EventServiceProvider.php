@@ -24,6 +24,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Event\ActualizationGroupNotification' => [
             'App\Listener\SendGroupNotification'
         ],
+        'App\Event\NewUser' => [
+            'App\Listener\HistorieWork'
+        ]
     ];
 
     /**

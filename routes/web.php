@@ -24,8 +24,6 @@ Route::middleware('auth')
     Route::get('/calendar', CalendarController::class)
         ->name('calendar.index');
     Route::resource('/day', StatusController::class);
-    Route::post('/register', [RegisterController::class, 'register'])
-        ->name('register');
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])
         ->name('register');
     Route::get('/logout', [LoginController::class, 'logout'])
@@ -35,6 +33,8 @@ Route::middleware('auth')
         'as' => 'user.',
         'prefix' => 'user'
     ], function() {
+        Route::post('/register', 'UserController@store')
+            ->name('register');
         Route::get('/', 'UserController@index')
             ->name('index');
         Route::get('/show', 'UserController@show')

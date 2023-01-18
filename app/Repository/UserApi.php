@@ -5,5 +5,5 @@ namespace App\Repository;
 interface UserApi
 {
     public function findByToken(string $token);
-    public function findOrFail(int $id);
+    public function findOrFail(array|int $id);
 }

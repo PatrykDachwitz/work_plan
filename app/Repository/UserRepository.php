@@ -7,7 +7,7 @@ use App\Models\User;
 interface UserRepository
 {
     public function update(array $data, User $updateUser);
-    public function findOrFail(int $id);
+    public function findOrFail(array|int $id);
     public function create(array $data);
     public function get(array|string $column = '*');
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Create;
 
 use App\Rules\StringValidate;
 use Illuminate\Foundation\Http\FormRequest;
 
-class EventCreate extends FormRequest
+class Event extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

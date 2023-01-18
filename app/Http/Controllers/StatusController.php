@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StatusCreate;
+use App\Http\Requests\Create\Status as StatusCreate;
 use App\Repository\DayRepository;
 use App\Repository\StatusRepository;
 use App\Services\Status\ManyStatuses;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Exception;
 use Illuminate\Support\Facades\Auth;
 
 class StatusController extends Controller

@@ -3,15 +3,14 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\DayCreate;
-use App\Http\Requests\DayFilter;
-use App\Http\Requests\DayUpdate;
+use App\Http\Requests\Create\Day;
+use App\Http\Requests\Filters\Day;
+use App\Http\Requests\Update\Day;
 use App\Http\Resources\Day;
 use App\Http\Resources\Days;
 use App\Repository\DayRepository;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class DaysController extends Controller
 {
@@ -26,7 +25,7 @@ class DaysController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(DayFilter $request)
+    public function index(Day $request)
     {
         $filters = $request->validated();
         $days = $this->dayRepository->get($filters);
@@ -50,7 +49,7 @@ class DaysController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(DayCreate $request)
+    public function store(Day $request)
     {
         $clearData = $request->validated();
         try {
@@ -110,7 +109,7 @@ class DaysController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(DayUpdate $request,int $id)
+    public function update(Day $request, int $id)
     {
         $clearData = $request->validated();
 

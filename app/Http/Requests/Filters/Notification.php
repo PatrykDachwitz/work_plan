@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Filters;
 
 use App\Rules\StringValidate;
+use App\Rules\UrlValidate;
 use Illuminate\Foundation\Http\FormRequest;
 
-class EventUpdate extends FormRequest
+class Notification extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +26,11 @@ class EventUpdate extends FormRequest
     public function rules()
     {
         return [
-            'date' => ["date_format:Y-m-d H:i:s"],
-            'description' => [new StringValidate(), 'max:255'],
+            'description' => [new StringValidate(), "max:255"],
+            'readed' => ['boolean'],
+            'url_action' => [new UrlValidate(), "max:255"],
+            'user_id' => ['integer'],
+            'author_id' => ['integer'],
         ];
     }
 }

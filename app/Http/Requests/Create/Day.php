@@ -1,12 +1,11 @@
 <?php
+declare(strict_types=1);
+namespace App\Http\Requests\Create;
 
-namespace App\Http\Requests;
-
-use App\Rules\StringValidate;
-use App\Rules\UrlValidate;
+use App\Rules\DayName;
 use Illuminate\Foundation\Http\FormRequest;
 
-class NotificationUpdate extends FormRequest
+class Day extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,9 +25,9 @@ class NotificationUpdate extends FormRequest
     public function rules()
     {
         return [
-            'description' => [new StringValidate(), "max:255"],
-            'readed' => ['boolean'],
-            'url_action' => [new UrlValidate(), "max:255"],
+            'date' => ['required', 'date_format:d-m-Y', "max:255"],
+            'day_name' => ['required', new DayName(), "max:255"],
+            'free_day' => ['boolean'],
         ];
     }
 }

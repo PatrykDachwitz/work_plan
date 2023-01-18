@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Event\AddNotification;
-use App\Http\Requests\UserCreate;
+use App\Event\NewUser;
+use App\Http\Requests\Create\User as UserCreate;
+use App\Http\Requests\Update\User as UserUpdate;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
-use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
@@ -52,9 +51,13 @@ class UserController extends Controller
         $clearData = $request->validated();
 
         $user = $this->userRepository->create($clearData);
+
+        event(new NewUser($user));
         if (!Gate::any('isSuperAdmin')) abort(403);
         return redirect()
-            ->route('user.show');
+            ->route('user.edit', [
+                'id' => $user->id
+            ]);
 
     }
 
@@ -106,7 +109,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UserCreate $request, int $id)
+    public function update(UserUpdate $request, int $id)
     {
         $employee = $this->userRepository->findOrFail($id);
         if (!Gate::any('myAccount', [$id]) & !Gate::any('userChangePermissions', [$employee])) {

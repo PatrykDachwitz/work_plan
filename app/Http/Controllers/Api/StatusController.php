@@ -3,19 +3,15 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StatusCreate;
-use App\Http\Requests\StatusFilter;
-use App\Http\Requests\StatusUpdate;
-use App\Http\Resources\Statuses;
+use App\Http\Requests\Create\Status;
+use App\Http\Requests\Filters\Status;
+use App\Http\Requests\Update\Status;
 use App\Http\Resources\Status;
-use App\Models\User;
+use App\Http\Resources\Statuses;
 use App\Repository\StatusRepository;
 use App\Repository\UserApi;
-use App\Repository\UserRepository;
-use Database\Seeders\StatusDay;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
@@ -32,7 +28,7 @@ class StatusController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(StatusFilter $request)
+    public function index(Status $request)
     {
         $filters = $request->validated();
 
@@ -63,7 +59,7 @@ class StatusController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StatusCreate $request)
+    public function store(Status $request)
     {
         $clearData = $request->validated();
 
@@ -125,7 +121,7 @@ class StatusController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(StatusUpdate $request,UserApi $userRepository, int $id)
+    public function update(Status $request, UserApi $userRepository, int $id)
     {
         $clearData = $request->validated();
         $tokenApi = $clearData['token_api'];

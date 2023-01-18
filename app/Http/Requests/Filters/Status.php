@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Filters;
 
-use App\Rules\StringValidate;
+use App\Rules\AvailableStatusDay;
+use App\Rules\DataBaseTypeWhere;
 use Illuminate\Foundation\Http\FormRequest;
 
-class EventFilter extends FormRequest
+class Status extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,9 +26,13 @@ class EventFilter extends FormRequest
     public function rules()
     {
         return [
-            'date' => ["date_format:Y-m-d H:i:s"],
             'user_id' => ['integer'],
-            'description' => [new StringValidate(), 'max:255'],
+            'day_id' => ['integer'],
+            'status' => [new AvailableStatusDay()],
+            'accepted' => ['integer'],
+            'accepted_user_id' => ['integer'],
+            'time_start.value' => ['date_format:Y-m-d H:i:s'],
+            'time_start.type' => [new DataBaseTypeWhere()],
         ];
     }
 }

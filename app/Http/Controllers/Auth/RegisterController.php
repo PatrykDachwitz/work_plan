@@ -89,7 +89,7 @@ class RegisterController extends Controller
         $user->group_id = $data['group_id'] ?? 0;
         $user->token_api = uniqid();
         $user->save();
-
+        dd($user);
         return $user;
     }
 }

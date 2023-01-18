@@ -7,6 +7,7 @@ use App\Repository\UserApi;
 use Exception;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Hash;
 
 class UserRepository implements \App\Repository\UserRepository, UserApi
 {
@@ -18,7 +19,9 @@ class UserRepository implements \App\Repository\UserRepository, UserApi
     }
 
     public function get(array|string $column = '*') {
-        return $this->user->get($column);
+        return $this->user
+            ->with('relationStatus')
+            ->get($column);
     }
 
     public function update(array $data, User $updateUser)
@@ -37,7 +40,7 @@ class UserRepository implements \App\Repository\UserRepository, UserApi
         return $updateUser->id;
     }
 
-    public function findOrFail(int $id)
+    public function findOrFail(array|int $id)
     {
         try {
             return $this->user->findOrFail($id);
@@ -50,7 +53,23 @@ class UserRepository implements \App\Repository\UserRepository, UserApi
 
     public function create(array $data)
     {
-        return $this->user->create($data);
+        $user = new $this->user();
+
+        $user->password = Hash::make($data['password']);
+        $user->first_name = $data['first_name'];
+        $user->last_name = $data['last_name'] ?? null;
+        $user->email_company = $data['email_company'];
+        $user->email_private = $data['email_private'];
+        $user->number_phone = $data['number_phone'] ?? null;
+        $user->city = $data['city'] ?? null;
+        $user->zip_code = $data['zip_code'] ?? null;
+        $user->street = $data['street'] ?? null;
+        $user->role_id = $data['role_id'] ?? 0;
+        $user->group_id = $data['group_id'] ?? 0;
+        $user->token_api = uniqid();
+        $user->save();
+
+        return $user;
     }
 
     public function findByToken(string $token)

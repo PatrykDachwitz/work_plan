@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
-namespace App\Http\Requests;
+namespace App\Http\Requests\Update;
 
-use App\Rules\DayName;
+use App\Rules\AvailableStatusDay;
 use Illuminate\Foundation\Http\FormRequest;
 
-class DayCreate extends FormRequest
+class Status extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,9 +25,12 @@ class DayCreate extends FormRequest
     public function rules()
     {
         return [
-            'date' => ['required', 'date_format:d-m-Y', "max:255"],
-            'day_name' => ['required', new DayName(), "max:255"],
-            'free_day' => ['boolean'],
+            'time_start' => ['date_format:Y-m-d H:i:s'],
+            'time_end' => ['date_format:Y-m-d H:i:s'],
+            'status' => [new AvailableStatusDay()],
+            'token_api' => ['required', 'string'],
+            'accepted' => ['boolean'],
+            'accepted_user_id' => ['integer', "min:1", "max:99999999"],
         ];
     }
 }

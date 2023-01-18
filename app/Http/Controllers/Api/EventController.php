@@ -3,16 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\EventCreate;
-use App\Http\Requests\EventFilter;
-use App\Http\Requests\EventUpdate;
+use App\Http\Requests\Create\Event;
+use App\Http\Requests\Filters\Event;
+use App\Http\Requests\Update\Event;
 use App\Http\Resources\Event;
 use App\Http\Resources\Events;
 use App\Repository\EventRepository;
-use http\Env\Response;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class EventController extends Controller
 {
@@ -22,7 +20,7 @@ class EventController extends Controller
         $this->eventRepository = $eventRepository;
     }
 
-    public function index(EventFilter $request) {
+    public function index(Event $request) {
         $clearData = $request->validated();
         try {
             $events = $this->eventRepository->get($clearData);
@@ -54,7 +52,7 @@ class EventController extends Controller
         return response()
             ->json(new Event($event), 200);
     }
-    public function store(EventCreate $request) {
+    public function store(Event $request) {
         $clearData = $request->validated();
         try {
             $event = $this->eventRepository->create($clearData);
@@ -68,7 +66,7 @@ class EventController extends Controller
         return response()
             ->json(new Event($event), 200);
     }
-    public function update(EventUpdate $request, int $id) {
+    public function update(Event $request, int $id) {
         $clearData = $request->validated();
 
         try {
