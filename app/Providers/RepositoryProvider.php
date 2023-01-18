@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Repository\CalendarCommand;
 use App\Repository\UserApi;
 use Illuminate\Support\ServiceProvider;
 use App\Repository\StatusRepository as StatusRepositoryInterface;
@@ -70,6 +71,11 @@ class RepositoryProvider extends ServiceProvider
         $this->app->singleton(
             HistoriesRepositoryInterface::class,
             HistoriesRepository::class
+        );
+
+        $this->app->singleton(
+            CalendarCommand::class,
+            DayRepository::class
         );
     }
 }

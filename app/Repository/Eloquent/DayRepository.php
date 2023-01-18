@@ -3,8 +3,9 @@ declare(strict_types=1);
 namespace App\Repository\Eloquent;
 use App\Models\Day;
 use App\Repository\DayRepository as DayInterface;
+use App\Repository\CalendarCommand;
 
-class DayRepository implements DayInterface
+class DayRepository implements DayInterface, CalendarCommand
 {
     private $day;
 
@@ -61,5 +62,10 @@ class DayRepository implements DayInterface
     public function destroy(int $id)
     {
         $this->day->findOrFail($id)->delete();
+    }
+
+    public function insert(array $days)
+    {
+        $this->day->insert($days);
     }
 }
