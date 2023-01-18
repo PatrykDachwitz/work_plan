@@ -11,6 +11,7 @@ class AvailableStatusDay implements Rule
         'workDay',
         'leaveOnRequest',
         'occasionalHolidays',
+        'delegation',
     ];
 
     /**

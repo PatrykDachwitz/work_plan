@@ -3,15 +3,14 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\NotificationCreate;
-use App\Http\Requests\NotificationFilter;
-use App\Http\Requests\NotificationUpdate;
+use App\Http\Requests\Create\Notification;
+use App\Http\Requests\Filters\Notification;
+use App\Http\Requests\Update\Notification;
 use App\Http\Resources\Notification;
 use App\Http\Resources\Notifications;
 use App\Repository\NotificationRepository;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class NotificationController extends Controller
 {
@@ -26,7 +25,7 @@ class NotificationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(NotificationFilter $request)
+    public function index(Notification $request)
     {
         $clearData = $request->validated();
         try {
@@ -57,7 +56,7 @@ class NotificationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(NotificationCreate $request)
+    public function store(Notification $request)
     {
         $clearData = $request->validated();
 
@@ -118,7 +117,7 @@ class NotificationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(NotificationUpdate $request, int $id)
+    public function update(Notification $request, int $id)
     {
         $clearData = $request->validated();
 

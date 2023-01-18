@@ -1,0 +1,19 @@
+.days-body {
+  display: flex;
+  flex-direction: column;
+  &-row {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    flex: 100% 3;
+
+  }
+
+  &-form {
+    flex:1;
+  }
+}
+
+.bg-gray {
+  background-color: $gray-500;
+}

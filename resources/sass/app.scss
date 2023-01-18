@@ -8,7 +8,16 @@
 @import 'bootstrap/scss/bootstrap';
 
 // Project style
-@import "project-style";
+@import "calendar";
 
 // Holidays form
 @import "holidays-form";
+
+// Days status
+@import "days";
+
+// Status/Day edit
+@import "status-edit";
+
+// Employees and team
+@import "team_employees";

@@ -3,8 +3,9 @@ declare(strict_types=1);
 namespace App\Repository\Eloquent;
 use App\Models\Day;
 use App\Repository\DayRepository as DayInterface;
+use App\Repository\CalendarCommand;
 
-class DayRepository implements DayInterface
+class DayRepository implements DayInterface, CalendarCommand
 {
     private $day;
 
@@ -21,20 +22,12 @@ class DayRepository implements DayInterface
     {
         $days = $this->day->newQuery();
 
-        foreach ($filters ?? [] as $columnName => $value) {
-            if(!isset($value['value'])) {
-                foreach ($value ?? [] as $val) {
-                    if(isset($val['type'])) {
-                        $days->where($columnName, $val['type'], $val['value']);
-                    } else {
-                        $days->where($columnName, $val['value']);
-                    }
-                }
-            } else {
-                if (isset($value['type'])) {
-                    $days->where($columnName, $value['type'], $value['value']);
+        foreach ($filters ?? [] as $columnName => $filter) {
+            foreach ($filter ?? [] as $valueFilter) {
+                if (is_array($valueFilter)) {
+                    $days->where($columnName, $valueFilter['type'], $valueFilter['value']);
                 } else {
-                    $days->where($columnName, $value['value']);
+                    $days->where($columnName, $valueFilter);
                 }
             }
         }
@@ -69,5 +62,10 @@ class DayRepository implements DayInterface
     public function destroy(int $id)
     {
         $this->day->findOrFail($id)->delete();
+    }
+
+    public function insert(array $days)
+    {
+        $this->day->insert($days);
     }
 }

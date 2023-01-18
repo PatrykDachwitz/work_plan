@@ -3,16 +3,17 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StatusCreate;
-use App\Http\Requests\StatusFilter;
-use App\Http\Requests\StatusUpdate;
-use App\Http\Resources\Statuses;
+use App\Http\Requests\Create\Status;
+use App\Http\Requests\Filters\Status;
+use App\Http\Requests\Update\Status;
 use App\Http\Resources\Status;
+use App\Http\Resources\Statuses;
 use App\Repository\StatusRepository;
-use Database\Seeders\StatusDay;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
+use App\Repository\UserApi;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class StatusController extends Controller
 {
@@ -27,7 +28,7 @@ class StatusController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(StatusFilter $request)
+    public function index(Status $request)
     {
         $filters = $request->validated();
 
@@ -58,9 +59,10 @@ class StatusController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StatusCreate $request)
+    public function store(Status $request)
     {
         $clearData = $request->validated();
+
         try {
             $status = $this->statusRepository->create($clearData);
         } catch (Exception) {
@@ -71,7 +73,8 @@ class StatusController extends Controller
         }
 
         return response()
-            ->json(new Status($status), 200);
+            ->json(['msg' => 'succes'], 200);
+            //->json(new Status($status), 200);
     }
 
     /**
@@ -84,7 +87,6 @@ class StatusController extends Controller
     {
         try {
             $status = $this->statusRepository->findOrFail($id);
-
             return response()
                 ->json(new Status($status), 200);
         } catch (ModelNotFoundException) {
@@ -119,10 +121,25 @@ class StatusController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(StatusUpdate $request, int $id)
+    public function update(Status $request, UserApi $userRepository, int $id)
     {
         $clearData = $request->validated();
+        $tokenApi = $clearData['token_api'];
+
         try{
+            $status = $this->statusRepository->findOrFail($id);
+            $user = $userRepository->findByToken($tokenApi);
+            $employee = $userRepository->findOrFail($status->user_id);
+            Auth::login($user);
+
+            if (!Gate::any('userChangePermissions', [$user, $employee])) {
+                return response()
+                    ->json([
+                        'msg' => 'You not have promision for update user'
+                    ], 403);
+            }
+
+            $clearData['accepted_user_id'] = Auth::id();
             $status = $this->statusRepository->update($clearData, $id);
         } catch (ModelNotFoundException) {
             return response()
