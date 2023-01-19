@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Create\Event;
-use App\Http\Requests\Filters\Event;
-use App\Http\Requests\Update\Event;
+use App\Http\Requests\Create\Event as EventCreate;
+use App\Http\Requests\Filters\Event as EventFilters;
+use App\Http\Requests\Update\Event as EventUpdate;
 use App\Http\Resources\Event;
 use App\Http\Resources\Events;
 use App\Repository\EventRepository;
@@ -20,7 +20,7 @@ class EventController extends Controller
         $this->eventRepository = $eventRepository;
     }
 
-    public function index(Event $request) {
+    public function index(EventFilters $request) {
         $clearData = $request->validated();
         try {
             $events = $this->eventRepository->get($clearData);
@@ -52,7 +52,7 @@ class EventController extends Controller
         return response()
             ->json(new Event($event), 200);
     }
-    public function store(Event $request) {
+    public function store(EventCreate $request) {
         $clearData = $request->validated();
         try {
             $event = $this->eventRepository->create($clearData);
@@ -66,7 +66,7 @@ class EventController extends Controller
         return response()
             ->json(new Event($event), 200);
     }
-    public function update(Event $request, int $id) {
+    public function update(EventUpdate $request, int $id) {
         $clearData = $request->validated();
 
         try {

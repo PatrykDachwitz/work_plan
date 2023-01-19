@@ -27,4 +27,15 @@ class Status extends Model
     public function relationDay() {
         return $this->belongsTo(Day::class, 'day_id', 'id');
     }
+
+    public function scopeGetTime(int $idUser, string $searchStatus = 'workDay', string $startTime = null, string $endTime = null) {
+        $query = $this->newQuery();
+        $query->where('status', $searchStatus);
+        $query->where('user_id', $idUser);
+        $query->where('accepted', true);
+        if (!is_null($startTime)) $query->where('date', ">=",  $startTime);
+        if (!is_null($endTime)) $query->where('date', "<=",  $endTime);
+
+        return $query->sum('complety_time');
+    }
 }

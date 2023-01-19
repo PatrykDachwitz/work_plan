@@ -3,9 +3,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Create\Status;
-use App\Http\Requests\Filters\Status;
-use App\Http\Requests\Update\Status;
+use App\Http\Requests\Create\Status as StatusCreate;
+use App\Http\Requests\Filters\Status as StatusFilters;
+use App\Http\Requests\Update\Status as StatusUpdate;
 use App\Http\Resources\Status;
 use App\Http\Resources\Statuses;
 use App\Repository\StatusRepository;
@@ -28,7 +28,7 @@ class StatusController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Status $request)
+    public function index(StatusFilters $request)
     {
         $filters = $request->validated();
 
@@ -121,7 +121,7 @@ class StatusController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Status $request, UserApi $userRepository, int $id)
+    public function update(StatusUpdate $request, UserApi $userRepository, int $id)
     {
         $clearData = $request->validated();
         $tokenApi = $clearData['token_api'];

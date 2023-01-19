@@ -3,9 +3,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Create\Day;
-use App\Http\Requests\Filters\Day;
-use App\Http\Requests\Update\Day;
+use App\Http\Requests\Create\Day as DayCreate;
+use App\Http\Requests\Filters\Day as DayFilters;
+use App\Http\Requests\Update\Day as DayUpdate;
 use App\Http\Resources\Day;
 use App\Http\Resources\Days;
 use App\Repository\DayRepository;
@@ -25,7 +25,7 @@ class DaysController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Day $request)
+    public function index(DayFilters $request)
     {
         $filters = $request->validated();
         $days = $this->dayRepository->get($filters);
@@ -49,7 +49,7 @@ class DaysController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Day $request)
+    public function store(DayCreate $request)
     {
         $clearData = $request->validated();
         try {
@@ -109,7 +109,7 @@ class DaysController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Day $request, int $id)
+    public function update(DayUpdate $request, int $id)
     {
         $clearData = $request->validated();
 
