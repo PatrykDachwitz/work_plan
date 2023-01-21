@@ -15,5 +15,4 @@ class Notification extends Model
         'url_action',
     ];
 
-    public function realtionUser(){}
 }

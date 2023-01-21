@@ -25,12 +25,12 @@ class Status extends FormRequest
     public function rules()
     {
         return [
-            'time_start' => ['date_format:Y-m-d H:i:s'],
-            'time_end' => ['date_format:Y-m-d H:i:s'],
             'status' => [new AvailableStatusDay()],
             'token_api' => ['required', 'string'],
             'accepted' => ['boolean'],
             'accepted_user_id' => ['integer', "min:1", "max:99999999"],
+            'hour_end' => ['date_format:H:i'],
+            'hour_start' => ['date_format:H:i'],
         ];
     }
 }

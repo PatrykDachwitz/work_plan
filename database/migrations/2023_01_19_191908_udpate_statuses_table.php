@@ -30,11 +30,23 @@ return new class extends Migration
     public function down()
     {
         Schema::table('statuses', function (Blueprint $table) {
-            $table->string('time_start');
-            $table->string('time_end');
-            $table->dropColumn('hour_start');
-            $table->dropColumn('hour_end');
-            $table->dropColumn('date');
+            if (Schema::hasColumn('statuses', 'time_start')) {
+                $table->string('time_start');
+            }
+            if (Schema::hasColumn('statuses', 'time_end')) {
+                $table->string('time_end');
+            }
+
+            if (Schema::hasColumn('statuses', 'hour_start')) {
+                $table->dropColumn('hour_start');
+            }
+            if (Schema::hasColumn('statuses', 'hour_end')) {
+                $table->dropColumn('hour_end');
+            }
+            if (Schema::hasColumn('statuses', 'date')) {
+                $table->dropColumn('date');
+            }
+
         });
     }
 };

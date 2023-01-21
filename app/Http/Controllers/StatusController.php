@@ -30,8 +30,8 @@ class StatusController extends Controller
 
         $filters = [
             'user_id' => Auth::id(),
-            'time_start' => [
-                'value' => date('Y-m-d', strtotime("+" . SELF::DAYS_AHEAD . " day")) . " 23:59:59",
+            'date' => [
+                'value' => date('d-m-Y', strtotime("+" . SELF::DAYS_AHEAD . " day")),
                 'type' => "<="
             ]
         ];

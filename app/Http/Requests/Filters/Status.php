@@ -31,8 +31,8 @@ class Status extends FormRequest
             'status' => [new AvailableStatusDay()],
             'accepted' => ['integer'],
             'accepted_user_id' => ['integer'],
-            'time_start.value' => ['date_format:Y-m-d H:i:s'],
-            'time_start.type' => [new DataBaseTypeWhere()],
+            'date.*.value' => ['date_format:d-m-Y'],
+            'date.*.type' => [new DataBaseTypeWhere()],
         ];
     }
 }

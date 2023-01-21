@@ -17,7 +17,7 @@ class EventRepository implements \App\Repository\EventRepository
         return $this->event->findOrFail($id);
     }
 
-    public function get(array $filters, array|string $column = '*')
+    public function get(array $filters = [], array|string $column = '*')
     {
         $event = $this->event->newQuery();
 

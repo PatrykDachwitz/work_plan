@@ -27,8 +27,13 @@ return new class extends Migration
             $table->integer('remaining_hours')->default(162);
             $table->integer('completed_hours')->default(0);
             $table->integer('overtime')->default(0);
-            $table->dropColumn('name');
-            $table->dropColumn('email');
+            if (Schema::hasColumn('users', 'name')) {
+                $table->dropColumn('name');
+            }
+            if (Schema::hasColumn('users', 'email')) {
+                $table->dropIndex('users_email_unique');
+                $table->dropColumn('email');
+            }
         });
     }
 
@@ -50,11 +55,24 @@ return new class extends Migration
             $table->dropColumn('street');
             $table->dropColumn('email_private');
             $table->dropColumn('email_company');
-            $table->dropColumn('remaining_hours');
-            $table->dropColumn('completed_hours');
-            $table->dropColumn('overtime');
-            $table->string('name');
-            $table->string('email');
+
+            if (Schema::hasColumn('users', 'remaining_hours')) {
+                $table->dropColumn('remaining_hours');
+            }
+            if (Schema::hasColumn('users', 'completed_hours')) {
+                $table->dropColumn('completed_hours');
+            }
+            if (Schema::hasColumn('users', 'overtime')) {
+                $table->dropColumn('overtime');
+            }
+
+            if (Schema::hasColumn('users', 'name')) {
+                $table->string('name');
+            }
+            if (Schema::hasColumn('users', 'email')) {
+                $table->string('email');
+            }
+
         });
     }
 };

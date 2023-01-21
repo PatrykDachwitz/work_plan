@@ -41,9 +41,15 @@ return new class extends Migration
     {
         Schema::dropIfExists('histories');
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('remaining_hours')->default(162);
-            $table->integer('completed_hours')->default(0);
-            $table->integer('overtime')->default(0);
+            if (Schema::hasColumn('users', 'remaining_hours')) {
+                $table->integer('remaining_hours')->default(162);
+            }
+            if (Schema::hasColumn('users', 'completed_hours')) {
+                $table->integer('completed_hours')->default(0);
+            }
+            if (Schema::hasColumn('users', 'overtime')) {
+                $table->integer('overtime')->default(0);
+            }
         });
     }
 };

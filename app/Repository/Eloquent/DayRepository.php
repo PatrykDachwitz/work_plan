@@ -25,7 +25,11 @@ class DayRepository implements DayInterface, CalendarCommand
         foreach ($filters ?? [] as $columnName => $filter) {
             foreach ($filter ?? [] as $valueFilter) {
                 if (is_array($valueFilter)) {
-                    $days->where($columnName, $valueFilter['type'], $valueFilter['value']);
+                    if (isset($valueFilter['type'])) {
+                        $days->where($columnName, $valueFilter['type'], $valueFilter['value']);
+                    } else {
+                        $days->where($columnName, $valueFilter['value']);
+                    }
                 } else {
                     $days->where($columnName, $valueFilter);
                 }
