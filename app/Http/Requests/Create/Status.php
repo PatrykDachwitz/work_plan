@@ -28,9 +28,10 @@ class Status extends FormRequest
             'user_id' => ['required', 'integer', 'min:1', "max:99999999"],
             'day_id' => ['integer', 'min:1', "max:99999999"],
             'status' => ['required', new AvailableStatusDay()],
-            'hour_start' => ['required', 'date_format:H:i'],
-            'hour_end' => ['date_format:H:i'],
+            'hour_start' => ['nullable', 'date_format:H:i'],
+            'hour_end' => ['nullable', 'date_format:H:i'],
             'date' => ['required', 'date_format:d-m-Y'],
+            'complety_time' => ['integer'],
         ];
     }
 }

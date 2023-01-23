@@ -1,11 +1,20 @@
 .content-container {
-  min-height: 100vh;
-  flex:50% 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  flex:1;
+  @media(min-width: 767px) {
+    min-height: 100vh;
+  }
 }
-
+.container-main-page{
+  @media(min-width: 767px) {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+  @media(max-width: 767px) {
+    display: flex;
+    flex-direction: column;
+  }
+}
+/*
 .calendar {
   width: 90%;
   min-height: 80vh;
@@ -77,3 +86,4 @@
     color: $light;
   }
 }
+*/

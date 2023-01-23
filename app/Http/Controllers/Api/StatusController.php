@@ -59,12 +59,18 @@ class StatusController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Status $request)
+    public function store(StatusCreate $request)
     {
-        $clearData = $request->validated();
-
         try {
-            $status = $this->statusRepository->create($clearData);
+            $status = $this->statusRepository->create($request->only([
+                'status',
+                'user_id',
+                'day_id',
+                'hour_start',
+                'hour_end',
+                'complety_time',
+                'date'
+            ]));
         } catch (Exception) {
             return response()
                 ->json([
@@ -73,8 +79,9 @@ class StatusController extends Controller
         }
 
         return response()
-            ->json(['msg' => 'succes'], 200);
-            //->json(new Status($status), 200);
+            ->json([
+                'msg' => "SUCCESS"
+            ], 200);
     }
 
     /**

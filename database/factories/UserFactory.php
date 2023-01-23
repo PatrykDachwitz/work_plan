@@ -25,8 +25,8 @@ class UserFactory extends Factory
         $faker = Faker::create();
         return [
             'first_name' => $faker->firstName,
-            'email_company' => $faker->email,
-            'password' => Hash::make(uniqid()),
+            'email_company' => "testEmail@wp.pl",
+            'password' => Hash::make('password'),
             'last_name' => $faker->lastName,
             'email_private' => $faker->safeEmail,
             'city' => $faker->city,

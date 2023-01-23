@@ -12,13 +12,16 @@ class Status extends Model
     protected $table = 'statuses';
     protected $fillable = [
         'status',
-        'accepted',
-        'accepted_user_id',
         'user_id',
         'day_id',
         'hour_start',
         'hour_end',
         'date',
+    ];
+
+    protected $guarded = [
+        'accepted',
+        'accepted_user_id',
     ];
 
     public function relationEvents() {

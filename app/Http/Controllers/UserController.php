@@ -52,7 +52,7 @@ class UserController extends Controller
 
         $user = $this->userRepository->create($clearData);
 
-        event(new NewUser($user));
+        //event(new NewUser($user));
         if (!Gate::any('isSuperAdmin')) abort(403);
         return redirect()
             ->route('user.edit', [
