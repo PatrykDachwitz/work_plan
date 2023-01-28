@@ -10,6 +10,7 @@ use App\Http\Resources\Status;
 use App\Http\Resources\Statuses;
 use App\Repository\StatusRepository;
 use App\Repository\UserApi;
+use App\Services\Status\BuildMultipleDaysStatus;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
@@ -18,6 +19,10 @@ use Illuminate\Support\Facades\Gate;
 class StatusController extends Controller
 {
 
+    /*
+     *
+     * Chiwlowo tylko dziął store
+     */
     protected $statusRepository;
 
     public function __construct(StatusRepository $statusRepository) {
@@ -61,16 +66,11 @@ class StatusController extends Controller
      */
     public function store(StatusCreate $request)
     {
+        $buildStatuses = new BuildMultipleDaysStatus($request->validated());
+        $clearDate = $buildStatuses->getConvert();
+
         try {
-            $status = $this->statusRepository->create($request->only([
-                'status',
-                'user_id',
-                'day_id',
-                'hour_start',
-                'hour_end',
-                'complety_time',
-                'date'
-            ]));
+            $this->statusRepository->create($clearDate);
         } catch (Exception) {
             return response()
                 ->json([
@@ -137,7 +137,6 @@ class StatusController extends Controller
             $status = $this->statusRepository->findOrFail($id);
             $user = $userRepository->findByToken($tokenApi);
             $employee = $userRepository->findOrFail($status->user_id);
-            Auth::login($user);
 
             if (!Gate::any('userChangePermissions', [$user, $employee])) {
                 return response()

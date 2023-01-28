@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Repository\DayRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CalendarController extends Controller
 {
@@ -23,7 +24,7 @@ class CalendarController extends Controller
     public function __invoke()
     {
         return View('calendar.index', [
-            'days' => $this->dayRepository->get()
+            'days' => $this->dayRepository->getWithUserStatus(Auth::id())
         ]);
     }
 }

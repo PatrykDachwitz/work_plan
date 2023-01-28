@@ -7,7 +7,7 @@ use App\Repository\CalendarCommand;
 
 class DayRepository implements DayInterface, CalendarCommand
 {
-    private $day;
+    private $day, $id;
 
     public function __construct(Day $day) {
         $this->day = $day;
@@ -71,5 +71,22 @@ class DayRepository implements DayInterface, CalendarCommand
     public function insert(array $days)
     {
         $this->day->insert($days);
+    }
+
+    public function findByDate(string $date)
+    {
+        return $this->day
+            ->where('date', $date)
+            ->first();
+    }
+
+    public function getWithUserStatus(int $id)
+    {
+        $this->id = $id;
+        return $this->day->with([
+            'relationStatus' => function ($query) {
+                $query->where('user_id', $this->id);
+            }
+        ])->get();
     }
 }

@@ -52,11 +52,13 @@ class StatusRepository implements \App\Repository\StatusRepository
     {
         $status = $this->status->findOrFail($id);
 
+        $status->status = $data['status'] ?? $status->status;
+        $status->user_id = $data['user_id'] ?? $status->user_id;
+        $status->day_id = $data['day_id'] ?? $status->day_id;
         $status->hour_start = $data['hour_start'] ?? $status->hour_start;
         $status->hour_end = $data['hour_end'] ?? $status->hour_end;
-        $status->status = $data['status'] ?? $status->status;
-        $status->accepted = $data['accepted'] ?? $status->accepted;
-        $status->accepted_user_id = $data['accepted_user_id'] ?? $status->accepted_user_id;
+        $status->complety_time = $data['complety_time'] ?? $status->complety_time;
+        $status->date = $data['date'] ?? $status->date;
 
         $status->save();
 
@@ -65,12 +67,23 @@ class StatusRepository implements \App\Repository\StatusRepository
 
     public function create(array $data)
     {
-        $status = $this->status::insert($data);
+        if (!isset($data[0]['status']))
+        {
+            $status = $this->status::create($data);
+
+        } else {
+            $status = $this->status::insert($data);
+        }
         return $status;
     }
 
     public function destroy(int $id)
     {
         return $this->status->findOrFail($id)->delete();
+    }
+
+    public function findByDataAndUser(int $idUser, string $date)
+    {
+        return $this->status->where('user_id', $idUser)->where('date', $date)->first();
     }
 }

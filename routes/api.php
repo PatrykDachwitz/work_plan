@@ -21,7 +21,16 @@ use App\Http\Controllers\Api\EventController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
+Route::group([
+    'namespace' => "App\Http\Controllers\Api",
+    "prefix" => "/user/{id}",
+    "as" => "user.change."
+], function() {
+    Route::put('/role', "UserController@changeRole")
+    ->name('role');
+    Route::put('/group', "UserController@changeGroup")
+    ->name('group');
+});
 Route::resource('days', DaysController::class);
 Route::resource('status', StatusController::class)
 ->middleware('auth.token');

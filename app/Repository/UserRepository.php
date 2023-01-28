@@ -10,4 +10,6 @@ interface UserRepository
     public function findOrFail(array|int $id);
     public function create(array $data);
     public function get(array|string $column = '*');
+    public function changeRole(int $id, int $role_id);
+    public function changeGroup(int $id, int $group_id);
 }

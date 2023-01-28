@@ -1,0 +1,21 @@
+.profil {
+  flex: 1;
+  @media(min-width: 767px) {
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  @media(max-width: 767px) {
+    align-items: stretch;
+  }
+  &-form {
+    overflow: auto;
+    @media(min-width: 767px) {
+      min-height: 95vh;
+    }
+    flex:95% 0;
+    &-body {
+    }
+  }
+
+}

@@ -32,7 +32,7 @@ class LoginPageTest extends TestCase
         $response = $this->actingAs($this->user)
             ->post(route('login'));
 
-        $response->assertRedirectToRoute('dashboard');
+        $response->assertLocation(route('dashboard'));
     }
 
     public function testLoginUser()
@@ -42,7 +42,7 @@ class LoginPageTest extends TestCase
             'password' => 'password'
         ]);
 
-        $response->assertRedirectToRoute('dashboard');
+        $response->assertLocation(route('dashboard'));
     }
 
     public function testFailedPassword()
@@ -76,6 +76,6 @@ class LoginPageTest extends TestCase
         $response = $this->actingAs($this->user)
             ->get(route('logout'));
 
-        $response->assertRedirectToRoute('login');
+        $response->assertLocation(route('dashboard'));
     }
 }

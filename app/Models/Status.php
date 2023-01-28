@@ -17,6 +17,7 @@ class Status extends Model
         'hour_start',
         'hour_end',
         'date',
+        'complety_time',
     ];
 
     protected $guarded = [

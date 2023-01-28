@@ -25,10 +25,13 @@ class Event extends FormRequest
     public function rules()
     {
         return [
-            'date' => ['required', "date_format:Y-m-d H:i:s"],
+            'date' => ['required', "date_format:d-m-Y"],
+            'hour' => ['required', "date_format:H:i"],
             'user_id' => ['required', 'min:1', 'integer'],
-            'status_id' => ['required', 'min:1', 'integer'],
+            'status_id' => ['nullable', 'integer'],
             'description' => [new StringValidate(), 'max:255'],
+            'exitWork' => ['boolean'],
+            'startWork' => ['boolean'],
         ];
     }
 }

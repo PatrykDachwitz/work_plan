@@ -9,4 +9,5 @@ interface StatusRepository
     public function update(array $data,int $id);
     public function create(array $data);
     public function destroy(int $id);
+    public function findByDataAndUser(int $idUser, string $date);
 }

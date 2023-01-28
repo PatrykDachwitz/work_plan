@@ -20,7 +20,8 @@ class EventFactory extends Factory
         $faker = Faker::create();
 
         return [
-            'date' => date('Y-m-d H:i:s'),
+            'date' => date('d-m-Y'),
+            'hour' => date('H:i'),
             'user_id' => 1,
             'status_id' => 1,
             'description' => $faker->text(255),

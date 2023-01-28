@@ -26,6 +26,12 @@ class EventServiceProvider extends ServiceProvider
         ],
         'App\Event\NewUser' => [
             'App\Listener\HistorieWork'
+        ],
+        'App\Event\UpdateIssetStatus' => [
+            'App\Listener\UpdateStatus'
+        ],
+        'App\Event\RegisterStatus' => [
+            'App\Listener\RegisterNewStatus'
         ]
     ];
 

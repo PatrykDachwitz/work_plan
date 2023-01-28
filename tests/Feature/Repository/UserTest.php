@@ -104,4 +104,23 @@ class UserTest extends TestCase
 
         $this->assertTrue($findGoodCountRaw);
     }
+
+    public function testChangeRole()
+    {
+        $this->repository->changeRole(1, 13);
+
+        $this->assertDatabaseHas('users', [
+            "role_id" => 13,
+            "id" => 1,
+        ]);
+    }
+    public function testChangeGroupe()
+    {
+        $this->repository->changeGroup(1, 13);
+
+        $this->assertDatabaseHas('users', [
+            "group_id" => 13,
+            "id" => 1,
+        ]);
+    }
 }

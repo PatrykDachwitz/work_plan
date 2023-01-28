@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class StatusesTest extends TestCase
 {
-    protected $statusData, $statusErrorData;
+    protected $statusData, $statusErrorData, $statusMultiData, $statusSearchSingle, $statusSearchMulti;
 
     protected function setUp(): void
     {
@@ -16,21 +16,69 @@ class StatusesTest extends TestCase
         $this->statusData = [
             "user_id" => 1,
             "day_id" => 1,
-            "complety_time" => 120,
-            "date" => "01-01-2023",
+            "date_start" => "01-01-2023",
+            "date_end" => "01-01-2023",
             "status" => "workDay",
             "hour_start" => "07:00",
-            //"hour_end" => null,
+            "hour_end" => "09:00",
+        ];
+
+        $this->statusMultiData = [
+            "user_id" => 1,
+            "day_id" => 1,
+            "date_start" => "01-01-2023",
+            "date_end" => "05-01-2023",
+            "status" => "workDay",
+            "hour_start" => "07:00",
+            "hour_end" => "09:00",
         ];
 
         $this->statusErrorData = [
             "user_id" => "test",
             "day_id" => "test",
-            "complety_time" => "test",
-            "date" => "1-1-2023",
+            "date_start" => "1-1-2023",
+            "date_end" => "1-1-2023",
             "status" => "test",
             "hour_start" => "7:00",
-            "hour_end" => "23",
+            "hour_end" => "2:03",
+        ];
+
+        $this->statusSearchSingle = [
+            "user_id" => 1,
+            "day_id" => 1,
+            "complety_time" => 120,
+            "date" => "01-01-2023",
+            "status" => "workDay",
+            "hour_start" => "07:00",
+            "hour_end" => "09:00",
+        ];
+
+        $this->statusSearchMulti = [
+            [
+                "user_id" => 1,
+                "day_id" => 1,
+                "complety_time" => 120,
+                "date" => "01-01-2023",
+                "status" => "workDay",
+                "hour_start" => "07:00",
+                "hour_end" => "09:00",
+            ], [
+                "user_id" => 1,
+                "day_id" => 1,
+                "complety_time" => 120,
+                "date" => "03-01-2023",
+                "status" => "workDay",
+                "hour_start" => "07:00",
+                "hour_end" => "09:00",
+            ], [
+                "user_id" => 1,
+                "day_id" => 1,
+                "complety_time" => 120,
+                "date" => "05-01-2023",
+                "status" => "workDay",
+                "hour_start" => "07:00",
+                "hour_end" => "09:00",
+            ]
         ];
     }
 
@@ -39,11 +87,21 @@ class StatusesTest extends TestCase
      *
      * @return void
      */
-    public function testApiCreateStatus()
+    public function testApiCreateSingleStatus()
     {
         $response = $this->post(route('status.store'), $this->statusData);
 
-        $this->assertDatabaseHas('statuses', $this->statusData);
+        $this->assertDatabaseHas('statuses', $this->statusSearchSingle);
+        $response->assertStatus(200);
+    }
+
+    public function testApiCreateMultiStatus()
+    {
+        $response = $this->post(route('status.store'), $this->statusMultiData);
+
+        $this->assertDatabaseHas('statuses', $this->statusSearchMulti[0])
+            ->assertDatabaseHas('statuses', $this->statusSearchMulti[1])
+            ->assertDatabaseHas('statuses', $this->statusSearchMulti[2]);
         $response->assertStatus(200);
     }
 
@@ -54,8 +112,8 @@ class StatusesTest extends TestCase
         $response->assertSessionHasErrors([
             "user_id",
             "day_id",
-            "complety_time",
-            "date",
+            "date_start",
+            "date_end",
             "status",
             "hour_start",
             "hour_end"

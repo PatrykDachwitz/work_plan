@@ -30,8 +30,8 @@ class Status extends FormRequest
             'status' => ['required', new AvailableStatusDay()],
             'hour_start' => ['nullable', 'date_format:H:i'],
             'hour_end' => ['nullable', 'date_format:H:i'],
-            'date' => ['required', 'date_format:d-m-Y'],
-            'complety_time' => ['integer'],
+            'date_start' => ['required', 'date_format:d-m-Y'],
+            'date_end' => ['required', 'date_format:d-m-Y']
         ];
     }
 }

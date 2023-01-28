@@ -17,6 +17,8 @@ use App\Repository\UserRepository as UserRepositoryInterface;
 use App\Repository\Eloquent\UserRepository;
 use App\Repository\HistoriesRepository as HistoriesRepositoryInterface;
 use App\Repository\Eloquent\HistoriesRepository;
+use App\Repository\GroupRepository as GroupRepositoryInterface;
+use App\Repository\Eloquent\GroupRepository;
 
 
 class RepositoryProvider extends ServiceProvider
@@ -76,6 +78,11 @@ class RepositoryProvider extends ServiceProvider
         $this->app->singleton(
             CalendarCommand::class,
             DayRepository::class
+        );
+
+        $this->app->singleton(
+            GroupRepositoryInterface::class,
+            GroupRepository::class
         );
     }
 }

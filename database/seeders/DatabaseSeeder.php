@@ -15,14 +15,14 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            GenereDays::class,
-            StatusDay::class,
+           // GenereDays::class,
+          //  StatusDay::class,
             UserTest::class,
         ]);
-        // \App\Models\User::factory(10)->create();
+        // \App\Models\UserRole::factory(10)->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
+        // \App\Models\UserRole::factory()->create([
+        //     'name' => 'Test UserRole',
         //     'email' => 'test@example.com',
         // ]);
     }

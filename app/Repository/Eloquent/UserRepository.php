@@ -81,4 +81,24 @@ class UserRepository implements \App\Repository\UserRepository, UserApi
         if (is_null($user)) throw new ModelNotFoundException();
         else return $user;
     }
+
+
+    public function changeRole(int $id, int $role_id)
+    {
+        $user = $this->findOrFail($id);
+
+        $user->role_id = $role_id;
+
+        $user->save();
+
+    }
+
+    public function changeGroup(int $id, int $group_id)
+    {
+        $user = $this->findOrFail($id);
+
+        $user->group_id = $group_id;
+
+        $user->save();
+    }
 }
