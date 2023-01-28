@@ -8,7 +8,7 @@
 @import 'bootstrap/scss/bootstrap';
 
 // Project style
-@import "calendar";
+@import "main-page";
 
 // Holidays form
 @import "holidays-form";
@@ -21,3 +21,12 @@
 
 // Employees and team
 @import "team_employees";
+
+// User Show and Edit
+@import "userProfil";
+
+//Users index
+@import "users";
+
+//Calendar index
+@import "calendar";

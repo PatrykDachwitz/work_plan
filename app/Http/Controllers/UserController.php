@@ -6,6 +6,7 @@ use App\Event\AddNotification;
 use App\Event\NewUser;
 use App\Http\Requests\Create\User as UserCreate;
 use App\Http\Requests\Update\User as UserUpdate;
+use App\Repository\GroupRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use Illuminate\Support\Facades\Auth;
@@ -23,10 +24,10 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(GroupRepository $groupRepository)
     {
-        return view('user.index', [
-            'users' => $this->userRepository->get(),
+         return view('user.index', [
+            'groups' => $groupRepository->get(),
         ]);
     }
 
@@ -52,8 +53,7 @@ class UserController extends Controller
 
         $user = $this->userRepository->create($clearData);
 
-        event(new NewUser($user));
-        if (!Gate::any('isSuperAdmin')) abort(403);
+        //event(new NewUser($user));
         return redirect()
             ->route('user.edit', [
                 'id' => $user->id
@@ -83,7 +83,7 @@ class UserController extends Controller
     public function edit(StatusRepository $statusRepository, int $id)
     {
         $employee = $this->userRepository->findOrFail($id);
-        if (!Gate::any('userChangePermissions', [$employee])) abort(403);
+        //if (!Gate::any('userChangePermissions', [$employee])) abort(403);
 
         $filtersNotAccepted = [
             'user_id' => $id,
@@ -111,36 +111,19 @@ class UserController extends Controller
      */
     public function update(UserUpdate $request, int $id)
     {
-        $employee = $this->userRepository->findOrFail($id);
-        if (!Gate::any('myAccount', [$id]) & !Gate::any('userChangePermissions', [$employee])) {
-            abort(403);
-        }
 
-        $clearData = $request->validated();
-        $this->userRepository->update($clearData, $employee);
+        $this->userRepository->update($request->only([
+            "first_name",
+            "last_name",
+            "email_company",
+            "email_private",
+            "number_phone",
+            "city",
+            "zip_code",
+            "street",
+        ]), $id);
 
-        event(new AddNotification('Update profil!!', $employee->id, route('user.edit', [
-            'id' => $id
-        ])));
-
-        if (Gate::any('myAccount', [$id])) {
-            return redirect()
-                ->route('user.show');
-        }
         return redirect()
-            ->route('user.edit', [
-                'id' => $id
-            ]);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+            ->back();
     }
 }

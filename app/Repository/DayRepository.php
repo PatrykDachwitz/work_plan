@@ -9,4 +9,6 @@ interface DayRepository
     public function update(array $data,int $id);
     public function create(array $data);
     public function destroy(int $id);
+    public function findByDate(string $date);
+    public function getWithUserStatus(int $id);
 }

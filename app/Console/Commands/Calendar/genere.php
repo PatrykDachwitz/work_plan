@@ -10,6 +10,10 @@ class genere extends Command
     private $holidays;
     private const COUNT_DAY_GENERE = 365;
 
+    private const AVAILABLE_HOLDIAYS_OPTION_API = [
+        'Public',
+    ];
+
     private const TRANSLATE_DAY = [
         'Mon' => 'Poniedziałek',
         'Tue' => 'Wtorek',
@@ -74,7 +78,14 @@ class genere extends Command
     public function convertoToArray(array|Object $result) {
         $holidaysDate = [];
         foreach ($result as $item) {
-            $holidaysDate[] = $item->date;
+            foreach ($item->types as $type) {
+                if (in_array($type, SELF::AVAILABLE_HOLDIAYS_OPTION_API)) {
+                    $holidaysDate[] = $item->date;
+                    break;
+                } else {
+                    continue;
+                }
+            }
         }
 
         return $holidaysDate;

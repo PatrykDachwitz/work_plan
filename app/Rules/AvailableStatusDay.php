@@ -9,8 +9,7 @@ class AvailableStatusDay implements Rule
     private const AVAILABLE_STATUS_DAY = [
         'holidayLeave',
         'workDay',
-        'leaveOnRequest',
-        'occasionalHolidays',
+        'sickLeave',
         'delegation',
     ];
 

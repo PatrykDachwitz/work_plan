@@ -3,9 +3,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Create\Notification;
-use App\Http\Requests\Filters\Notification;
-use App\Http\Requests\Update\Notification;
+use App\Http\Requests\Create\Notification as NotificationCreate;
+use App\Http\Requests\Filters\Notification as NotificationFilters;
+use App\Http\Requests\Update\Notification as NotificationUpdate;
 use App\Http\Resources\Notification;
 use App\Http\Resources\Notifications;
 use App\Repository\NotificationRepository;
@@ -25,7 +25,7 @@ class NotificationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Notification $request)
+    public function index(NotificationFilters $request)
     {
         $clearData = $request->validated();
         try {
@@ -56,7 +56,7 @@ class NotificationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Notification $request)
+    public function store(NotificationCreate $request)
     {
         $clearData = $request->validated();
 
@@ -117,7 +117,7 @@ class NotificationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Notification $request, int $id)
+    public function update(NotificationUpdate $request, int $id)
     {
         $clearData = $request->validated();
 

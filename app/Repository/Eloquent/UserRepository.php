@@ -24,20 +24,21 @@ class UserRepository implements \App\Repository\UserRepository, UserApi
             ->get($column);
     }
 
-    public function update(array $data, User $updateUser)
+    public function update(array $data, int $id)
     {
+        $user = $this->findOrFail($id);
 
-        $updateUser->first_name = $data['first_name'] ?? $updateUser->first_name;
-        $updateUser->email_company = $data['email_company'] ?? $updateUser->email_company;
-        $updateUser->last_name = $data['last_name'] ?? $updateUser->last_name;
-        $updateUser->email_private = $data['email_private'] ?? $updateUser->email_private;
-        $updateUser->city = $data['city'] ?? $updateUser->city;
-        $updateUser->zip_code = $data['zip_code'] ?? $updateUser->zip_code;
-        $updateUser->street = $data['street'] ?? $updateUser->street;
-        $updateUser->number_phone = $data['number_phone'] ?? $updateUser->number_phone;
-        $updateUser->save();
+        $user->first_name = $data['first_name'] ?? $user->first_name;
+        $user->email_company = $data['email_company'] ?? $user->email_company;
+        $user->last_name = $data['last_name'] ?? $user->last_name;
+        $user->email_private = $data['email_private'] ?? $user->email_private;
+        $user->city = $data['city'] ?? $user->city;
+        $user->zip_code = $data['zip_code'] ?? $user->zip_code;
+        $user->street = $data['street'] ?? $user->street;
+        $user->number_phone = $data['number_phone'] ?? $user->number_phone;
+        $user->save();
 
-        return $updateUser->id;
+        return $user;
     }
 
     public function findOrFail(array|int $id)
@@ -79,5 +80,25 @@ class UserRepository implements \App\Repository\UserRepository, UserApi
         ->first();
         if (is_null($user)) throw new ModelNotFoundException();
         else return $user;
+    }
+
+
+    public function changeRole(int $id, int $role_id)
+    {
+        $user = $this->findOrFail($id);
+
+        $user->role_id = $role_id;
+
+        $user->save();
+
+    }
+
+    public function changeGroup(int $id, int $group_id)
+    {
+        $user = $this->findOrFail($id);
+
+        $user->group_id = $group_id;
+
+        $user->save();
     }
 }

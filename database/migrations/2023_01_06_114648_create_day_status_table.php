@@ -17,11 +17,12 @@ return new class extends Migration
             $table->id();
             $table->integer('user_id');
             $table->integer('day_id');
-            $table->timestamp('time_start')->nullable();
-            $table->timestamp('time_end')->nullable();
+            $table->string('time_start')->nullable();
+            $table->string('time_end')->nullable();
             $table->string('status')->default('workDay');
             $table->boolean('accepted')->default(false);
             $table->integer('accepted_user_id')->nullable();
+            $table->integer('complety_time')->default(0);
             $table->timestamps();
         });
     }

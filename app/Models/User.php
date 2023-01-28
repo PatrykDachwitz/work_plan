@@ -28,6 +28,7 @@ class User extends Authenticatable
         'zip_code',
         'street',
         'number_phone',
+        'token_api',
     ];
 
     /**

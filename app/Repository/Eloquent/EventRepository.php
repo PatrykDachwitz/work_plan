@@ -17,15 +17,9 @@ class EventRepository implements \App\Repository\EventRepository
         return $this->event->findOrFail($id);
     }
 
-    public function get(array $filters, array|string $column = '*')
+    public function get(array|string $column = '*')
     {
-        $event = $this->event->newQuery();
-
-        foreach ($filters ?? [] as $columnName => $filter) {
-            $event->where($columnName, $filter);
-        }
-
-        return $event->get($column);
+        return $this->event->get($column);
     }
 
     public function update(array $data, int $id)
@@ -34,21 +28,15 @@ class EventRepository implements \App\Repository\EventRepository
 
         $event->date = $data['date'] ?? $event->date;
         $event->description = $data['description'] ?? $event->description;
-        $event->save();
+        $event->hour = $data['hour'] ?? $event->hour;
 
+        $event->save();
         return $event;
     }
 
     public function create(array $data)
     {
-        $event = new $this->event();
-        $event->date = $data['date'];
-        $event->user_id = $data['user_id'];
-        $event->status_id = $data['status_id'];
-        $event->description = $data['description'] ?? null;
-
-        $event->save();
-        return $event;
+        return $this->event->create($data);
     }
 
     public function destroy(int $id)

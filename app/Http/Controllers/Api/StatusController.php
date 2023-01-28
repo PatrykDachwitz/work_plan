@@ -3,13 +3,14 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Create\Status;
-use App\Http\Requests\Filters\Status;
-use App\Http\Requests\Update\Status;
+use App\Http\Requests\Create\Status as StatusCreate;
+use App\Http\Requests\Filters\Status as StatusFilters;
+use App\Http\Requests\Update\Status as StatusUpdate;
 use App\Http\Resources\Status;
 use App\Http\Resources\Statuses;
 use App\Repository\StatusRepository;
 use App\Repository\UserApi;
+use App\Services\Status\BuildMultipleDaysStatus;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
@@ -18,6 +19,10 @@ use Illuminate\Support\Facades\Gate;
 class StatusController extends Controller
 {
 
+    /*
+     *
+     * Chiwlowo tylko dziął store
+     */
     protected $statusRepository;
 
     public function __construct(StatusRepository $statusRepository) {
@@ -28,7 +33,7 @@ class StatusController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Status $request)
+    public function index(StatusFilters $request)
     {
         $filters = $request->validated();
 
@@ -59,12 +64,13 @@ class StatusController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Status $request)
+    public function store(StatusCreate $request)
     {
-        $clearData = $request->validated();
+        $buildStatuses = new BuildMultipleDaysStatus($request->validated());
+        $clearDate = $buildStatuses->getConvert();
 
         try {
-            $status = $this->statusRepository->create($clearData);
+            $this->statusRepository->create($clearDate);
         } catch (Exception) {
             return response()
                 ->json([
@@ -73,8 +79,9 @@ class StatusController extends Controller
         }
 
         return response()
-            ->json(['msg' => 'succes'], 200);
-            //->json(new Status($status), 200);
+            ->json([
+                'msg' => "SUCCESS"
+            ], 200);
     }
 
     /**
@@ -121,7 +128,7 @@ class StatusController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Status $request, UserApi $userRepository, int $id)
+    public function update(StatusUpdate $request, UserApi $userRepository, int $id)
     {
         $clearData = $request->validated();
         $tokenApi = $clearData['token_api'];
@@ -130,7 +137,6 @@ class StatusController extends Controller
             $status = $this->statusRepository->findOrFail($id);
             $user = $userRepository->findByToken($tokenApi);
             $employee = $userRepository->findOrFail($status->user_id);
-            Auth::login($user);
 
             if (!Gate::any('userChangePermissions', [$user, $employee])) {
                 return response()

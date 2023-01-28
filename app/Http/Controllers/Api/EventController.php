@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Event\RegisterExitWork;
+use App\Event\RegisterStartWork;
+use App\Event\RegisterStatus;
+use App\Event\UpdateIssetStatus;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Create\Event;
-use App\Http\Requests\Filters\Event;
-use App\Http\Requests\Update\Event;
+use App\Http\Requests\Create\Event as EventCreate;
+use App\Http\Requests\Filters\Event as EventFilters;
+use App\Http\Requests\Update\Event as EventUpdate;
 use App\Http\Resources\Event;
 use App\Http\Resources\Events;
 use App\Repository\EventRepository;
@@ -20,7 +24,7 @@ class EventController extends Controller
         $this->eventRepository = $eventRepository;
     }
 
-    public function index(Event $request) {
+    public function index(EventFilters $request) {
         $clearData = $request->validated();
         try {
             $events = $this->eventRepository->get($clearData);
@@ -52,9 +56,24 @@ class EventController extends Controller
         return response()
             ->json(new Event($event), 200);
     }
-    public function store(Event $request) {
-        $clearData = $request->validated();
+    public function store(EventCreate $request) {
         try {
+            if (is_null($request->input('status_id', null))) {
+                $statusId = (event(new RegisterStatus($request->validated())))[0];
+            } else {
+                $request->get('exitWork', false) ? event(new UpdateIssetStatus($request->validated())) : true;
+                $request->get('startWork', false) ? event(new UpdateIssetStatus($request->validated())) : true;
+            }
+
+            $clearData = $request->only([
+                'date',
+                'hour',
+                'user_id',
+                'status_id',
+                'description',
+            ]);
+            $clearData['status_id'] ?? $clearData['status_id'] = $statusId;
+
             $event = $this->eventRepository->create($clearData);
         } catch (Exception) {
             return response()
@@ -66,7 +85,7 @@ class EventController extends Controller
         return response()
             ->json(new Event($event), 200);
     }
-    public function update(Event $request, int $id) {
+    public function update(EventUpdate $request, int $id) {
         $clearData = $request->validated();
 
         try {

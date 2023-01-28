@@ -14,4 +14,9 @@ class Day extends Model
         'day_name',
         'free_day',
     ];
+
+    public function relationStatus()
+    {
+        return $this->hasMany(Status::class, 'date', 'date');
+    }
 }
