@@ -23,8 +23,18 @@ class CalendarController extends Controller
      */
     public function __invoke()
     {
+        $filter = [
+            'date' => [
+                [
+                    'value' => date("d-m-Y"),
+                    'type' => '>='
+                ]
+            ]
+        ];
+
+
         return View('calendar.index', [
-            'days' => $this->dayRepository->getWithUserStatus(Auth::id())
+            'days' => $this->dayRepository->getWithUserStatus(Auth::id(), $filter, 32)
         ]);
     }
 }

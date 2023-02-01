@@ -18,7 +18,7 @@ class DayRepository implements DayInterface, CalendarCommand
         return $this->day->findOrFail($id);
     }
 
-    public function get(array $filters = [], string|array $column = "*")
+    public function get(array $filters = [], int $limit = 30, string|array $column = "*")
     {
         $days = $this->day->newQuery();
 
@@ -35,7 +35,8 @@ class DayRepository implements DayInterface, CalendarCommand
                 }
             }
         }
-
+        $days->limit($limit);
+        $days->orderBy('date');
         return $days->get($column);
     }
 
@@ -43,7 +44,11 @@ class DayRepository implements DayInterface, CalendarCommand
     {
         $day = $this->day->findOrFail($id);
 
+        if (isset($data['date'])) $dayAndMonth = $this->getDayAndMonth($data['date']);
+
         $day->date = $data['date'] ?? $day->date;
+        $day->day = $dayAndMonth['day'] ?? $day->day;
+        $day->month = $dayAndMonth['month'] ?? $day->month;
         $day->day_name = $data['day_name'] ?? $day->day_name;
         $day->free_day = $data['free_day'] ?? $day->free_day;
 
@@ -51,11 +56,23 @@ class DayRepository implements DayInterface, CalendarCommand
         return $day;
     }
 
+    private function getDayAndMonth(string $date) {
+        $time = strtotime($date);
+
+        return [
+            'day' => date('d', $time),
+            'month' => date('M', $time),
+        ];
+    }
     public function create(array $data)
     {
         $day = new $this->day();
 
+        $dayAndMonth = $this->getDayAndMonth($data['date']);
+
         $day->date = $data['date'];
+        $day->day = $dayAndMonth['day'];
+        $day->month = $dayAndMonth['month'];
         $day->day_name = $data['day_name'];
         if(isset($data['free_day'])) $day->free_day = $data['free_day'];
 
@@ -80,13 +97,33 @@ class DayRepository implements DayInterface, CalendarCommand
             ->first();
     }
 
-    public function getWithUserStatus(int $id)
+    public function getWithUserStatus(int $id, array $filters = [], int $limit = 30)
     {
         $this->id = $id;
-        return $this->day->with([
+
+        $query = $this->day->newQuery();
+        $query->with([
             'relationStatus' => function ($query) {
                 $query->where('user_id', $this->id);
             }
-        ])->get();
+        ]);
+
+        foreach ($filters ?? [] as $columnName => $filter) {
+            foreach ($filter ?? [] as $valueFilter) {
+                if (is_array($valueFilter)) {
+                    if (isset($valueFilter['type'])) {
+                        $query->where($columnName, $valueFilter['type'], $valueFilter['value']);
+                    } else {
+                        $query->where($columnName, $valueFilter['value']);
+                    }
+                } else {
+                    $query->where($columnName, $valueFilter);
+                }
+            }
+        }
+
+        $query->limit($limit);
+        $query->orderBy('date');
+        return $query->get();
     }
 }

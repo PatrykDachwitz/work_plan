@@ -26,9 +26,8 @@ class Status extends FormRequest
     {
         return [
             'status' => [new AvailableStatusDay()],
-            'token_api' => ['required', 'string'],
+            'token_api' => ['string'],
             'accepted' => ['boolean'],
-            'accepted_user_id' => ['integer', "min:1", "max:99999999"],
             'hour_end' => ['date_format:H:i'],
             'hour_start' => ['date_format:H:i'],
         ];

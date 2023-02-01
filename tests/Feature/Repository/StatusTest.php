@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace Repository;
 
+use App\Models\Event;
 use App\Models\Status;
 use App\Models\User;
 use App\Repository\Eloquent\StatusRepository;
@@ -89,6 +90,18 @@ class StatusTest extends TestCase
         $this->assertDatabaseHas('statuses', $this->statusData);
     }
 
+    public function testStatusAccepted()
+    {
+        $data = [
+            'id' => 1,
+            'accepted' => true,
+            'accepted_user_id' => 1
+        ];
+        $this->repository->update($data, 1);
+
+        $this->assertDatabaseHas('statuses', $data);
+    }
+
     public function testStatusCreate()
     {
         $status = $this->repository->create($this->statusData);
@@ -114,13 +127,27 @@ class StatusTest extends TestCase
         $this->assertTrue($countOneModel);
     }
 
-    public function testStatusGetFilter()
+
+    public function testStatusGetWithEvent()
     {
-        $this->repository->create($this->statusData);
+        Event::factory()->create([
+            'user_id' => 1,
+            'status_id' => 1
+        ]);
 
-        $statues = $this->repository->get($this->filters);
-        $countOneModel = count($statues) === 1;
+        $statues = $this->repository->get();
 
-        $this->assertTrue($countOneModel);
+        $issetRelationEvent = isset($statues[0]->relationEvents[0]);
+
+        $this->assertTrue($issetRelationEvent);
     }
+    public function testStatusGetWithDontIssetEvent()
+    {
+        $statues = $this->repository->get();
+
+        $issetRelationEvent = isset($statues[0]->relationEvents[0]);
+
+        $this->assertFalse($issetRelationEvent);
+    }
+
 }

@@ -9,10 +9,14 @@ class Day extends Model
 {
     use HasFactory;
 
+    //protected $dateFormat = 'd-m-Y';
+
     protected $fillable = [
         'date',
         'day_name',
         'free_day',
+        'day',
+        'month',
     ];
 
     public function relationStatus()

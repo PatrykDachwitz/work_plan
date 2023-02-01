@@ -93,6 +93,8 @@ class genere extends Command
 
     public function getDay(int $nextDay) {
         $nameDay = date("D", strtotime("+{$nextDay} day"));
+        $day = date("d", strtotime("+{$nextDay} day"));
+        $monthName = date("M", strtotime("+{$nextDay} day"));
         $year = (int) date("Y", strtotime("+{$nextDay} day"));
         $dateUsFormat = date("Y-m-d", strtotime("+{$nextDay} day"));
         $dateName = date("d-m-Y", strtotime("+{$nextDay} day"));
@@ -100,9 +102,11 @@ class genere extends Command
         $freeDay = in_array($nameDay, SELF::FREE_WORK_DAY) ? true : $this->verificationHolidays($dateUsFormat, $year);
 
         return [
-          'date' => $dateName,
+          'date' => $dateUsFormat,
           'day_name' => SELF::TRANSLATE_DAY[$nameDay],
           'free_day' => $freeDay,
+          'day' => $day,
+          'month' => $monthName
         ];
     }
 
