@@ -46,7 +46,26 @@ Route::middleware('auth')
         Route::post('/{id}', 'UserController@update')
             ->name('update');
     });
+
+        Route::group([
+            'namespace' => "\App\Http\Controllers",
+            "as" => 'group.',
+            "prefix" => 'group',
+        ], function () {
+            Route::get('/', 'GroupController@index')
+                ->name('index');
+            Route::get('/{id}/show', 'GroupController@show')
+                ->name('show');
+            Route::get('/{id}/edit', 'GroupController@edit')
+                ->name('edit');
+            Route::post('/create', 'GroupController@store')
+                ->name('create');
+            Route::post('/{id}', 'GroupController@update')
+                ->name('update');
+        });
+
 });
+
 
 Route::post('/login', [LoginController::class, 'login'])
     ->name('login');
