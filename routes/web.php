@@ -23,23 +23,27 @@ Route::middleware('auth')
     ->name('dashboard');
     Route::get('/calendar', CalendarController::class)
         ->name('calendar.index');
+
     Route::resource('/day', StatusController::class);
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])
         ->name('register');
     Route::get('/logout', [LoginController::class, 'logout'])
     ->name('logout');
+
     Route::group([
         'namespace' => "\App\Http\Controllers",
         'as' => 'user.',
         'prefix' => 'user'
     ], function() {
         Route::post('/register', 'UserController@store')
+            ->middleware(['auth.admin'])
             ->name('register');
         Route::get('/', 'UserController@index')
             ->name('index');
         Route::get('/show', 'UserController@show')
             ->name('show');
         Route::get('/create', 'UserController@create')
+            ->middleware(['auth.admin'])
             ->name('create');
         Route::get('/{id}', 'UserController@edit')
             ->name('edit');

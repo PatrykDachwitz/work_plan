@@ -88,7 +88,8 @@ class UserController extends Controller
     public function edit(StatusRepository $statusRepository, int $id)
     {
         $employee = $this->userRepository->findOrFail($id);
-        //if (!Gate::any('userChangePermissions', [$employee])) abort(403);
+
+        if (!Gate::any('updateData', [$employee])) abort(403);
 
         $filtersNotAccepted = [
             'user_id' => $id,
@@ -116,6 +117,8 @@ class UserController extends Controller
      */
     public function update(UserUpdate $request, int $id)
     {
+        $employee = $this->userRepository->findOrFail($id);
+        if (!Gate::any('updateData', [$employee])) abort(403);
 
         $this->userRepository->update($request->only([
             "first_name",

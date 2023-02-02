@@ -9,7 +9,7 @@ use Tests\TestCase;
 
 class UserTest extends TestCase
 {
-    private $errorData, $correctData, $correctUpdateData;
+    private $errorData, $correctData, $correctUpdateData, $userAdmin, $userSuperAdmin;
     /**
      * A basic feature test example.
      *
@@ -21,6 +21,12 @@ class UserTest extends TestCase
         parent::setUp();
 
         $user = User::factory()->create();
+        $this->userAdmin = User::factory()->create([
+            'role_id' => 1
+        ]);
+        $this->userSuperAdmin = User::factory()->create([
+            'role_id' => 2
+        ]);
         $this->actingAs($user);
 
         $this->errorData = [
@@ -78,21 +84,114 @@ class UserTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testCreateUser()
+    public function testCreateUserNotPermision()
     {
         $response = $this->get(route('user.create'));
+
+        $response->assertStatus(403);
+    }
+
+    public function testCreateUserAdminPermision()
+    {
+        $response = $this->actingAs($this->userAdmin)
+            ->get(route('user.create'));
+
+        $response->assertStatus(403);
+    }
+
+    public function testCreateUser()
+    {
+        $response = $this->actingAs($this->userSuperAdmin)
+            ->get(route('user.create'));
 
         $response->assertStatus(200);
     }
 
-    public function testEditUser()
+    public function testEditUserNotPromision()
     {
         $response = $this->get(route('user.edit', [
             'id' => 1
         ]));
 
+        $response->assertStatus(403);
+    }
+    public function testEditUserNotPromisionNotHerGroup()
+    {
+        $user = User::factory()->create([
+            'id' => 50,
+            'role_id' => 0,
+            "group_id" => 150
+        ]);
+        User::factory()->create([
+            'id' => 51,
+            'role_id' => 0,
+            "group_id" => 150
+        ]);
+
+        $response = $this->actingAs($user)
+            ->get(route('user.edit', [
+            'id' => 51
+        ]));
+
+        $response->assertStatus(403);
+    }
+
+    public function testEditUserAdminPromisionNotHerGroup()
+    {
+        $user = User::factory()->create([
+            'id' => 50,
+            'role_id' => 1,
+            "group_id" => 150
+        ]);
+        $response = $this->actingAs($user)
+            ->get(route('user.edit', [
+            'id' => 1
+        ]));
+
+        $response->assertStatus(403);
+    }
+
+    public function testEditUserHerGroupAdminPromision()
+    {
+        $user = User::factory()->create([
+            'id' => 50,
+            'role_id' => 1,
+            "group_id" => 150
+        ]);
+        User::factory()->create([
+            'id' => 51,
+            'role_id' => 0,
+            "group_id" => 150
+        ]);
+        $response = $this->actingAs($user)
+            ->get(route('user.edit', [
+            'id' => 51
+        ]));
+
+        $response->assertStatus(403);
+    }
+
+    public function testEditUserSuperAdminPromision()
+    {
+        $user = User::factory()->create([
+            'id' => 50,
+            'role_id' => 2,
+            "group_id" => 149
+        ]);
+        User::factory()->create([
+            'id' => 51,
+            'role_id' => 0,
+            "group_id" => 150
+        ]);
+        $response = $this->actingAs($user)
+            ->get(route('user.edit', [
+            'id' => 51
+        ]));
+
         $response->assertStatus(200);
     }
+
+
     public function testShowUser()
     {
         $response = $this->get(route('user.show'));
@@ -100,9 +199,26 @@ class UserTest extends TestCase
         $response->assertStatus(200);
     }
 
+
+
+    public function testCreateErrorDataOnRequestNotPermision()
+    {
+        $response = $this->post(route('user.register'), $this->correctData);
+
+        $response->assertStatus(403);
+    }
+    public function testCreateErrorDataOnRequestNotPermisionAdmin()
+    {
+        $response = $this->actingAs($this->userAdmin)
+            ->post(route('user.register'), $this->correctData);
+
+        $response->assertStatus(403);
+    }
+
     public function testCreateErrorDataOnRequest()
     {
-        $response = $this->post(route('user.register'), $this->errorData);
+        $response = $this->actingAs($this->userSuperAdmin)
+        ->post(route('user.register'), $this->errorData);
 
         $response->assertSessionHasErrors([
             'password',
@@ -117,7 +233,8 @@ class UserTest extends TestCase
 
     public function testCreateCorrectDataOnRequest()
     {
-        $response = $this->post(route('user.register'), $this->correctData);
+        $response = $this->actingAs($this->userSuperAdmin)
+        ->post(route('user.register'), $this->correctData);
 
         $searchData = $this->correctData;
         unset($searchData['password_confirmation']);
@@ -133,7 +250,8 @@ class UserTest extends TestCase
             'email_company' => 'test2@wp.pl'
         ]);
 
-        $response = $this->post(route('user.register'), $this->correctData);
+        $response = $this->actingAs($this->userSuperAdmin)
+            ->post(route('user.register'), $this->correctData);
         $searchData = $this->correctData;
         unset($searchData['password_confirmation']);
         unset($searchData['password']);
@@ -147,7 +265,8 @@ class UserTest extends TestCase
     {
         $searchData = $this->correctData;
         unset($searchData['password_confirmation']);
-        $response = $this->post(route('user.register'), $searchData);
+        $response = $this->actingAs($this->userSuperAdmin)
+            ->post(route('user.register'), $searchData);
 
         $response->assertStatus(302)
         ->assertSessionHasErrors([
@@ -157,7 +276,8 @@ class UserTest extends TestCase
 
     public function testUpdateErrorDataOnRequest()
     {
-        $response = $this->post(route('user.update', [
+        $response = $this->actingAs($this->userSuperAdmin)
+            ->post(route('user.update', [
             'id' => 1
         ]), $this->errorUpdateData);
 
@@ -171,7 +291,8 @@ class UserTest extends TestCase
 
     public function testUpdateCorrectDataOnRequest()
     {
-        $response = $this->post(route('user.update', [
+        $response = $this->actingAs($this->userSuperAdmin)
+            ->post(route('user.update', [
             'id' => 1
         ]), $this->correctUpdateData);
 
@@ -179,14 +300,38 @@ class UserTest extends TestCase
         $response->assertStatus(302);
     }
 
-    public function testUpdate()
+    public function testUpdateCorrectDataOnRequestAdminPermisionNotHerGroup()
     {
-        $response = $this->post(route('user.update', [
+        $user = User::factory()->create([
+           'role_id' => 1,
+           'group_id' => 150
+        ]);
+        $response = $this->actingAs($user)
+            ->post(route('user.update', [
             'id' => 1
         ]), $this->correctUpdateData);
 
-        $this->assertDatabaseHas('users', $this->correctUpdateData);
-        $response->assertStatus(302);
+        $response->assertStatus(403);
+    }
+
+    public function testUpdateCorrectDataOnRequestAdminPemisionHerGroup()
+    {
+        $user = User::factory()->create([
+            'role_id' => 1,
+            'group_id' => 150
+        ]);
+        User::factory()->create([
+            'id' => 50,
+            'role_id' => 0,
+            'group_id' => 150
+        ]);
+
+        $response = $this->actingAs($user)
+            ->post(route('user.update', [
+            'id' => 50
+        ]), $this->correctUpdateData);
+
+        $response->assertStatus(403);
     }
 
     public function testUpdateWithDuplicateEmail()
@@ -195,7 +340,8 @@ class UserTest extends TestCase
             'email_company' => 'test2@wp.pl'
         ]);
 
-        $response = $this->post(route('user.update', [
+        $response = $this->actingAs($this->userSuperAdmin)
+            ->post(route('user.update', [
             'id' => 1
         ]), $this->correctUpdateData);
 
@@ -209,12 +355,13 @@ class UserTest extends TestCase
     public function testUpdateWithDuplicateHerEmail()
     {
         User::factory()->create([
-            'id' => 2,
+            'id' => 4,
             'email_company' => 'test2@wp.pl'
         ]);
 
-        $response = $this->post(route('user.update', [
-            'id' => 2
+        $response = $this->actingAs($this->userSuperAdmin)
+            ->post(route('user.update', [
+            'id' => 4
         ]), $this->correctUpdateData);
 
         $this->assertDatabaseHas('users', $this->correctUpdateData);

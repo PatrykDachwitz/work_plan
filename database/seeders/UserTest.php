@@ -35,6 +35,21 @@ class UserTest extends Seeder
                 'role_id' => 0
             ];
         }
+
+        $users[] = [
+            'first_name' => $faker->firstName,
+            'email_company' => "patrykda99@gmail.com",
+            'password' => Hash::make('test1234'),
+            'last_name' => $faker->lastName,
+            'email_private' => $faker->safeEmail,
+            'city' => $faker->city,
+            'zip_code' => $faker->postcode,
+            'street' => $faker->streetAddress,
+            'number_phone' => rand(111111111,999999999),
+            'token_api' => uniqid(),
+            'group_id' => rand(0,4),
+            'role_id' => 0
+        ];
         DB::table('users')->insertOrIgnore($users);
 
     }
