@@ -18,3 +18,8 @@
         </div>
     </div>
 @endsection
+
+@section('scriptJs')
+    @vite(['resources/js/dashboard.js'])
+@endsection
+

@@ -1,11 +1,11 @@
 <?php
-declare(strict_types=1);
-namespace App\Http\Requests\Update;
 
-use App\Rules\AvailableStatusDay;
+namespace App\Http\Requests\Create;
+
+use App\Rules\StringValidate;
 use Illuminate\Foundation\Http\FormRequest;
 
-class Status extends FormRequest
+class Group extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,11 +25,8 @@ class Status extends FormRequest
     public function rules()
     {
         return [
-            'status' => [new AvailableStatusDay()],
-            'token_api' => ['string'],
-            'accepted' => ['boolean'],
-            'hour_end' => ['date_format:H:i'],
-            'hour_start' => ['date_format:H:i'],
+            'name' => ['required', new StringValidate(), "max:255"],
+            'available' => ['required', 'boolean']
         ];
     }
 }

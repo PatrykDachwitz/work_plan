@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Status extends Model
 {
     use HasFactory;
+   // protected $dateFormat = 'd-m-Y';
 
     protected $table = 'statuses';
     protected $fillable = [

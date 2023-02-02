@@ -69,6 +69,8 @@ class UserRepository implements \App\Repository\UserRepository, UserApi
         $user->group_id = $data['group_id'] ?? 0;
         $user->token_api = uniqid();
         $user->save();
+        $user->createToken($user->email_company, $user->id);
+        $user->save();
 
         return $user;
     }

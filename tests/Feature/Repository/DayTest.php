@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace Repository;
 
 use App\Models\Day;
@@ -47,6 +47,8 @@ class DayTest extends TestCase
             'date' => "12-12-2023",
             'day_name' => 'Piątek',
             'free_day' => 0,
+            'day' => 12,
+            'month' => 'Dec',
         ];
     }
 
@@ -87,6 +89,64 @@ class DayTest extends TestCase
         $countOneModel = count($day) === 1;
 
         $this->assertTrue($countOneModel);
+    }
+
+    public function testGetDayLimits()
+    {
+        Day::factory()->count(30)
+            ->create();
+        $day = $this->repository->get([], 30);
+
+        $countOneModel = count($day) === 30;
+
+        $this->assertTrue($countOneModel);
+    }
+
+    public function testGetDayFilterByDate()
+    {
+        Day::factory()->create([
+            'date' => '29-01-2023'
+        ]);
+        $filter = [
+            'date' => [
+                [
+                    'value' => "29-01-2023",
+                    'type' => ">="
+                ]
+            ]
+        ];
+
+        $day = $this->repository->get($filter);
+        $this->assertTrue($day[0]->date === '29-01-2023');
+    }
+
+    public function testGetDayLimitsWithStatus()
+    {
+        Day::factory()->count(30)
+            ->create();
+        $day = $this->repository->getWithUserStatus(1, [], 30);
+
+        $countOneModel = count($day) === 30;
+
+        $this->assertTrue($countOneModel);
+    }
+
+    public function testGetDayFilterByDateWithStatus()
+    {
+        Day::factory()->create([
+            'date' => '29-01-2023'
+        ]);
+        $filter = [
+            'date' => [
+                [
+                    'value' => "29-01-2023",
+                    'type' => ">="
+                ]
+            ]
+        ];
+
+        $day = $this->repository->getWithUserStatus(1, $filter);
+        $this->assertTrue($day[0]->date === '29-01-2023');
     }
 
     public function testGetDaysWithStatus()

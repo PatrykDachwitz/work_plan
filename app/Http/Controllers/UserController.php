@@ -67,10 +67,15 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show(StatusRepository $statusRepository)
     {
+        $filters = [
+          'user_id' => Auth::id()
+        ];
+
         return view('user.show', [
-            'user' => Auth::user()
+            'user' => Auth::user(),
+            'statuses' => $statusRepository->get($filters, 15)
         ]);
     }
 

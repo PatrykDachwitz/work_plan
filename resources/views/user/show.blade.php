@@ -2,7 +2,6 @@
 
 @section('content')
     @isset($user)
-        {{ dump($errors) }}
         <div class="d-flex justify-content-center profil">
             <form class="bg-gray rounded profil-form my-3 m-md-0 shadow-lg d-flex flex-column" action="{{ route('user.update', [ 'id' => $user->id ]) }}" method="POST">
                 @csrf
@@ -15,6 +14,12 @@
                             </picture>
                         </a>
                         <span class="ms-2">{{ "#" . $user->id . " " . $user->first_name . " " . $user->last_name }}</span>
+                        <span class="ms-4 me-2 text-warning change-body pointer" data-body="info">
+                            @lang('global.profil_info')
+                        </span>
+                        <span class="change-body pointer" data-body="statuses">
+                            @lang('global.statuses')
+                        </span>
                     </div>
                     <div class="profil-group-input">
                         <button class="btn btn-sm">
@@ -31,7 +36,7 @@
                         </button>
                     </div>
                 </nav>
-                <div class="row p-5 g-3 m-0">
+                <div data-body="info" class="row p-5 g-3 m-0 d-flex">
                     <div class="col-md-4">
                         <label for="validationCustom01" class="form-label">@lang('profil.first_name')</label>
                         <input type="text" class="form-control @error('first_name') is-invalid @enderror " id="validationCustom01" name="first_name" placeholder="@lang('profil.first_name')" value="{{ old('first_name', $user->first_name) }}" required>
@@ -127,7 +132,45 @@
                         <input type="text" class="form-control" id="validationCustom05" value="{{ $user->token_api }}" disabled>
                     </div>
                 </div>
+                <div class="row p-0 m-0 d-none" data-body="statuses">
+                    @foreach($statuses ?? [] as $status)
+                        <div class="d-flex align-items-center justify-content-start fs-4 p-2 @if($status->status == 'workDay') bg-success text-white @else bg-warning @endif">
+                            <button class="btn  btn-dark fs-6 @if($status->accepted) disabled @else acceptedStatus @endif" data-id="{{ $status->id }}">@lang('global.accepted_input')</button>
+                            <span class="ms-4">
+                                 {{ __('global.time') . $status->date }}
+                            </span>
+                                <span class="ms-4">
+                                    @lang('global.hour')
+                                    @empty($status->hour_start)
+                                        @lang('global.none')
+                                    @else
+                                        {{ $status->hour_start }}
+                                    @endempty
+                                    -
+                                    @empty($status->hour_end)
+                                        @lang('global.none')
+                                    @else
+                                        {{ $status->hour_end }}
+                                    @endempty
+                            </span>
+                        </div>
+                        @foreach($status->relationEvents ?? [] as $event)
+                            <div class="bg-body fs-5 text-dark p-1 border border-1 shadow">
+                                <span class="ms-4">
+                                        {{ $event->hour ?? __('global.none') }}
+                                </span>
+                                <span>
+                                        {{ __('global.description') . $event->description }}
+                                </span>
+                            </div>
+                        @endforeach
+                    @endforeach
+                </div>
             </form>
         </div>
     @endisset
+@endsection
+
+@section('scriptJs')
+    @vite(['resources/js/profil.js'])
 @endsection

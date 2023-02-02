@@ -131,21 +131,8 @@ class StatusController extends Controller
     public function update(StatusUpdate $request, UserApi $userRepository, int $id)
     {
         $clearData = $request->validated();
-        $tokenApi = $clearData['token_api'];
-
-        try{
-            $status = $this->statusRepository->findOrFail($id);
-            $user = $userRepository->findByToken($tokenApi);
-            $employee = $userRepository->findOrFail($status->user_id);
-
-            if (!Gate::any('userChangePermissions', [$user, $employee])) {
-                return response()
-                    ->json([
-                        'msg' => 'You not have promision for update user'
-                    ], 403);
-            }
-
-            $clearData['accepted_user_id'] = Auth::id();
+        $status = $this->statusRepository->update($clearData, $id);
+        /*try{
             $status = $this->statusRepository->update($clearData, $id);
         } catch (ModelNotFoundException) {
             return response()
@@ -157,7 +144,7 @@ class StatusController extends Controller
                 ->json([
                     'msg' => 'Error with update status day in database'
                 ], 500);
-        }
+        }*/
         return response()
             ->json(new Status($status), 200);
     }

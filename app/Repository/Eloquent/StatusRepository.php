@@ -3,6 +3,7 @@
 namespace App\Repository\Eloquent;
 
 use App\Models\Status;
+use Carbon\Carbon;
 
 class StatusRepository implements \App\Repository\StatusRepository
 {
@@ -45,6 +46,7 @@ class StatusRepository implements \App\Repository\StatusRepository
         return $statuses
             ->with('relationEvents')
             ->with('relationDay')
+            ->orderBy('date')
             ->get($column);
     }
 
@@ -53,13 +55,15 @@ class StatusRepository implements \App\Repository\StatusRepository
         $status = $this->status->findOrFail($id);
 
         $status->status = $data['status'] ?? $status->status;
+        $status->accepted = $data['accepted'] ?? $status->accepted;
+        $status->accepted_user_id = $data['accepted_user_id'] ?? $status->accepted_user_id;
         $status->user_id = $data['user_id'] ?? $status->user_id;
         $status->day_id = $data['day_id'] ?? $status->day_id;
         $status->hour_start = $data['hour_start'] ?? $status->hour_start;
         $status->hour_end = $data['hour_end'] ?? $status->hour_end;
         $status->complety_time = $data['complety_time'] ?? $status->complety_time;
         $status->date = $data['date'] ?? $status->date;
-
+        $status->updated_at = date('Y-m-d H:i:s');
         $status->save();
 
         return $status;

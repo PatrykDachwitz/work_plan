@@ -20,6 +20,8 @@ class DayFactory extends Factory
             'date' => date("d-m-Y"),
             'day_name' => 'Piątek',
             'free_day' => 0,
+            'day' => date("d"),
+            'month' => date("M"),
         ];
     }
 }

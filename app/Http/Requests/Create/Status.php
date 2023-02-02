@@ -31,7 +31,7 @@ class Status extends FormRequest
             'hour_start' => ['nullable', 'date_format:H:i'],
             'hour_end' => ['nullable', 'date_format:H:i'],
             'date_start' => ['required', 'date_format:d-m-Y'],
-            'date_end' => ['required', 'date_format:d-m-Y']
+            'date_end' => ['required', 'date_format:d-m-Y'],
         ];
     }
 }

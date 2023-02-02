@@ -36,3 +36,6 @@ Route::resource('status', StatusController::class)
 ->middleware('auth.token');
 Route::resource('notification', NotificationController::class);
 Route::resource('event', EventController::class);
+
+Route::get('/index', [\App\Http\Controllers\Api\UserController::class, 'index'])
+->middleware(['auth:sanctum']);

@@ -1,0 +1,1 @@
+Ogólnie zacząłem oglądać dzisiaj the sinner i puki co mi się podoba
