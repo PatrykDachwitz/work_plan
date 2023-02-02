@@ -50,11 +50,14 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    public function testCreateUser()
+    public function testCreateUserAndToken()
     {
-        $this->repository->create($this->userData);
+        $user = $this->repository->create($this->userData);
 
-        $this->assertDatabaseHas('users', $this->searchUser);
+        $this->assertDatabaseHas('users', $this->searchUser)
+        ->assertDatabaseHas('personal_access_tokens', [
+            'tokenable_id' => $user->id
+        ]);
     }
 
     public function testUserShowById()

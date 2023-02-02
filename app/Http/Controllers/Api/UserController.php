@@ -16,6 +16,13 @@ class UserController extends Controller
     {
         $this->userRepository = $userRepository;
     }
+
+    public function index(Request $request)
+    {
+        dd($request);
+        return response()
+            ->json(['msg' => 'test'], 200);
+    }
     public function changeRole(UserRole $request, int $id)
     {
         $this->userRepository->changeRole($id, $request->input('role_id', 0));
